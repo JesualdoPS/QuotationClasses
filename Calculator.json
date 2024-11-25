@@ -1,0 +1,30 @@
+[
+  {
+    "Math": "15 m \u002B 5 m",
+    "Result": {
+      "Value": 20,
+      "Unit": "Meter"
+    }
+  },
+  {
+    "Math": "10 m * 2 m",
+    "Result": {
+      "Value": 20,
+      "Unit": "SquareMeter"
+    }
+  },
+  {
+    "Math": "5 mm - 3 mm",
+    "Result": {
+      "Value": 2,
+      "Unit": "Millimeter"
+    }
+  },
+  {
+    "Math": "3 mm * 3 mm",
+    "Result": {
+      "Value": 9,
+      "Unit": "SquareMillimeter"
+    }
+  }
+]
