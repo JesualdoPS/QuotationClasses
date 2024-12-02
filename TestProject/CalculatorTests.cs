@@ -6,14 +6,14 @@ using UnitsNet;
 namespace TestProject
 {
     [TestClass]
-    public class UnitTest1
+    public class CalculatorTests
     {
         [TestMethod]
         public void ShouldAddTwoNumbers()
         {
             //Arrange
-            var calculator = new Calculator();
-
+            var repository = new Repository();
+            var calculator = new Calculator(repository);
 
             //Act
             var result = calculator.Add(1, 1);
@@ -27,8 +27,8 @@ namespace TestProject
         public void ShouldAddAStringWithALengthBasedUnitOfMeasure()
         {
             //Arrange
-            var calculator = new Calculator();
-
+            var repository = new Repository();
+            var calculator = new Calculator(repository);
 
             //Act
             var result = calculator.Calculate("12 m + 2 m");
@@ -41,8 +41,8 @@ namespace TestProject
         public void ShouldSubtractAStringWithALengthBasedUnitOfMeasure()
         {
             //Arrange
-            var calculator = new Calculator();
-
+            var repository = new Repository();
+            var calculator = new Calculator(repository);
 
             //Act
             var result = calculator.Calculate("12 m - 2 m");
@@ -55,8 +55,8 @@ namespace TestProject
         public void ShouldMultiplyAStringWithALengthBasedUnitOfMeasure()
         {
             //Arrange
-            var calculator = new Calculator();
-
+            var repository = new Repository();
+            var calculator = new Calculator(repository);
 
             //Act
             var result = calculator.Calculate("12 m * 2 m");
@@ -69,8 +69,8 @@ namespace TestProject
         public void ShouldAddAStringWithALengthBasedUnitOfMeasureInMillimeters()
         {
             //Arrange
-            var calculator = new Calculator();
-
+            var repository = new Repository();
+            var calculator = new Calculator(repository);
 
             //Act
             var result = calculator.Calculate("12 mm + 2 mm");
@@ -83,8 +83,8 @@ namespace TestProject
         public void ShouldSubtractAStringWithALengthBasedUnitOfMeasureInMillimeters()
         {
             //Arrange
-            var calculator = new Calculator();
-
+            var repository = new Repository();
+            var calculator = new Calculator(repository);
 
             //Act
             var result = calculator.Calculate("12 mm - 2 mm");
@@ -97,8 +97,8 @@ namespace TestProject
         public void ShouldMultiplyAStringWithALengthBasedUnitOfMeasureInMillimeters()
         {
             //Arrange
-            var calculator = new Calculator();
-
+            var repository = new Repository();
+            var calculator = new Calculator(repository);
 
             //Act
             var result = calculator.Calculate("12 mm * 2 mm");
@@ -111,7 +111,8 @@ namespace TestProject
         public void ShouldThrowExceptionWhenUnsupportedOperatorSymbolIsUsed()
         {
             // Arrange
-            var calculator = new Calculator();
+            var repository = new Repository();
+            var calculator = new Calculator(repository);
 
             // Act e Assert
             Assert.ThrowsException<FormatException>(() => calculator.Calculate("12 m : 2 m "));
@@ -121,7 +122,8 @@ namespace TestProject
         public void ShouldThrowExceptionWhenUnsupportedOperatorSymbolIsUsed_Millimeter()
         {
             // Arrange
-            var calculator = new Calculator();
+            var repository = new Repository();
+            var calculator = new Calculator(repository);
 
             // Act e Assert
             Assert.ThrowsException<FormatException>(() => calculator.Calculate("12 mm : 2 mm"));
@@ -130,7 +132,8 @@ namespace TestProject
         public void ShouldThrowExceptionWhenUnsupportedOperatorSymbolIsUsed_NotationWithoutSpaces()
         {
             // Arrange
-            var calculator = new Calculator();
+            var repository = new Repository();
+            var calculator = new Calculator(repository);
 
             // Act e Assert
             Assert.ThrowsException<FormatException>(() => calculator.Calculate("12m:2m"));
@@ -140,7 +143,8 @@ namespace TestProject
         public void ShouldThrowExceptionWhenUnsupportedOperatorSymbolIsUsed_Millimeter_NotationWithoutSpaces()
         {
             // Arrange
-            var calculator = new Calculator();
+            var repository = new Repository();
+            var calculator = new Calculator(repository);
 
             // Act e Assert
             Assert.ThrowsException<FormatException>(() => calculator.Calculate("12mm:2mm"));
@@ -150,7 +154,8 @@ namespace TestProject
         public void ShouldThrowExceptionWhenExpressionDoesNotHaveAllParts()
         {
             // Arrange
-            var calculator = new Calculator();
+            var repository = new Repository();
+            var calculator = new Calculator(repository);
 
             // Act
             Action result = () => calculator.Calculate("15m+15");
@@ -163,8 +168,8 @@ namespace TestProject
         public void ShouldAddAStringWithALengthBasedUnitOfMeasure_NotationWithoutSpaces()
         {
             //Arrange
-            var calculator = new Calculator();
-
+            var repository = new Repository();
+            var calculator = new Calculator(repository);
 
             //Act
             var result = calculator.Calculate("12m+2m");
@@ -177,7 +182,8 @@ namespace TestProject
         public void ShouldAddTwoLenghts()
         {
             //Arrange
-            var calculator = new Calculator();
+            var repository = new Repository();
+            var calculator = new Calculator(repository);
             var length1 = Length.FromMeters(1);
             var length2 = Length.FromMeters(1);
 
@@ -193,7 +199,8 @@ namespace TestProject
         public void ShouldMultiplyTwoLenghts()
         {
             //Arrange
-            var calculator = new Calculator();
+            var repository = new Repository();
+            var calculator = new Calculator(repository);
             var length1 = Length.FromMeters(1);
             var length2 = Length.FromMeters(1);
 
@@ -210,7 +217,8 @@ namespace TestProject
         public void ShouldMultiplyThreeLenghts()
         {
             //Arrange
-            var calculator = new Calculator();
+            var repository = new Repository();
+            var calculator = new Calculator(repository);
             var lenght1 = Length.FromMeters(1);
             var lenght2 = Length.FromMeters(1);
             var lenght3 = Length.FromMeters(1);
@@ -228,7 +236,8 @@ namespace TestProject
         public void ShouldCalculateWeightOfWater()
         {
             //Arrange
-            var waterWeight = new Calculator();
+            var repository = new Repository();
+            var waterWeight = new Calculator(repository);
             var waterVolume = Volume.FromCubicMeters(1);
 
             //Act
@@ -243,7 +252,8 @@ namespace TestProject
         public void ShouldCalculateWeightOfSteel()
         {
             //Arrange
-            var steelWeight = new Calculator();
+            var repository = new Repository();
+            var steelWeight = new Calculator(repository);
             var steelVolume = Volume.FromCubicMeters(1);
 
             //Act
@@ -258,7 +268,8 @@ namespace TestProject
         public void ShouldCalculateWeightOfAluminum()
         {
             //Arrange
-            var aluminumWeight = new Calculator();
+            var repository = new Repository();
+            var aluminumWeight = new Calculator(repository);
             var aluminumVolume = Volume.FromCubicMeters(1);
 
             //Act
@@ -273,48 +284,52 @@ namespace TestProject
         public void ShouldMemorizeACalculation()
         {
             //Arrange
-            var calculator = new Calculator();
+            var repository = new Repository();
+            var calculator = new Calculator(repository);
 
             //Act
             calculator.Calculate("12 mm - 2 mm");
 
             //Assert
-            calculator.Memory.Should().HaveCount(1);
+            repository.Memory.Should().HaveCount(1);
         }
 
         [TestMethod]
         public void ShouldMemorizeEachCalculation()
         {
             //Arrange
-            var calculator = new Calculator();
+            var repository = new Repository();
+            var calculator = new Calculator(repository);
 
             //Act
             calculator.Calculate("12 mm - 2 mm");
             calculator.Calculate("12 mm - 2 mm");
 
             //Assert
-            calculator.Memory.Should().HaveCount(2);
+            repository.Memory.Should().HaveCount(2);
         }
 
         [TestMethod]
         public void ShouldMemorizeCurrentMemoryPosition()
         {
             //Arrange
-            var calculator = new Calculator();
+            var repository = new Repository();
+            var calculator = new Calculator(repository);
 
             //Act
             calculator.Calculate("12 mm - 2 mm");
             calculator.Calculate("12 mm - 2 mm");
 
             //Assert
-            calculator.MemoryPosition.Should().Be(1);
+            repository.MemoryPosition.Should().Be(1);
         }
 
         [TestMethod]
         public void ShouldShowPreviousCalculation()
         {
             //Arrange
-            var calculator = new Calculator();
+            var repository = new Repository();
+            var calculator = new Calculator(repository);
 
             //Act
             calculator.Calculate("15 mm - 10 mm");
@@ -331,7 +346,8 @@ namespace TestProject
         public void ShouldShowNextCalculation()
         {
             //Arrange
-            var calculator = new Calculator();
+            var repository = new Repository();
+            var calculator = new Calculator(repository);
 
             //Act
             calculator.Calculate("15 mm - 10 mm");
@@ -350,7 +366,8 @@ namespace TestProject
         public void ShouldNotDoNextIfOnLastItemInMemory()
         {
             //Arrange
-            var calculator = new Calculator();
+            var repository = new Repository();
+            var calculator = new Calculator(repository);
 
             //Act
             calculator.Calculate("15 mm - 10 mm");
@@ -366,7 +383,8 @@ namespace TestProject
         public void ShouldNotDoPreviousIfOnFirstItemInMemory()
         {
             //Arrange
-            var calculator = new Calculator();
+            var repository = new Repository();
+            var calculator = new Calculator(repository);
 
             //Act
             calculator.Calculate("35 mm - 20 mm");
@@ -381,7 +399,8 @@ namespace TestProject
         public void ShouldCalculaterAStringWithMetersAndMillimeterBasedUnitOfMeasure()
         {
             //Arrange
-            var calculator = new Calculator();
+            var repository = new Repository();
+            var calculator = new Calculator(repository);
 
 
             //Act
@@ -393,70 +412,6 @@ namespace TestProject
             result1.Result.Should().Be(Length.FromMeters(15.005));
             result2.Result.Should().Be(Length.FromMeters(14.995));
             result3.Result.Should().Be(Area.FromSquareMeters(0.075));
-        }
-
-        [TestMethod]
-        public void ShouldSerializeMathLogToJson()
-        {
-            // Arrange
-            var calculator = new Calculator();
-            var mathLogs = new List<MathLog>
-            {
-                new MathLog { Math = "15 m + 5 m", Result = Length.FromMeters(20) },
-                new MathLog { Math = "10 m * 2 m", Result = Area.FromSquareMeters(20) },
-                new MathLog { Math = "5 mm - 3 mm", Result = Length.FromMillimeters(2) },
-                new MathLog { Math = "3 mm * 3 mm", Result = Area.FromSquareMillimeters(9) }
-            };
-            calculator.Memory = mathLogs;
-            var filePath = @"D:\Material de aula\Aula de Programação\curso_C#\Aulas\QuotationFactory\Calculator.json";
-
-            // Act
-            calculator.SaveMemory(filePath);
-            var indented = new JsonSerializerOptions();
-            indented.WriteIndented = true;
-            var loadedCalculator = new Calculator();
-            loadedCalculator.LoadMemory(filePath);
-
-            // Assert
-            calculator.Memory.Count.Should().Be(mathLogs.Count);
-            for (int i = 0; i < mathLogs.Count; i++)
-            {
-                loadedCalculator.Memory[i].Math.Should().Be(mathLogs[i].Math);
-                loadedCalculator.Memory[i].Result.ToString().Should().Be(mathLogs[i].Result.ToString());
-            }
-        }
-
-        [TestMethod]
-        public void ShouldThrowFileNotFoundException()
-        {
-            // Arrange
-            var calculator = new Calculator();
-            var filePath = @"C:\temp\Calcultor_DoesNotExist.json";
-
-            // Act
-            Action action = () => calculator.LoadMemory(filePath);
-
-            // Assert
-            action.Should().Throw<FileNotFoundException>("File Not Found", filePath);
-        }
-
-        [TestMethod]
-        public void ShouldThrowJsonException_WhenSerializingInvalidMathLog()
-        {
-            // Arrange
-            var calculator = new Calculator();
-            var mathLogs = new List<MathLog>
-            {
-                new MathLog { Math = "15 x + 5 x", Result = null }
-            };
-            calculator.Memory = mathLogs;
-            var filePath = @"D:\Material de aula\Aula de Programação\curso_C#\Aulas\QuotationFactory\Calculator.json";
-
-            // Act
-            Action action = () => calculator.SaveMemory(filePath);
-
-            // Assert
-            action.Should().Throw<JsonException>();
         }
     }
 }

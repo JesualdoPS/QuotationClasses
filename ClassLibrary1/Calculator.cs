@@ -1,5 +1,4 @@
 ﻿using System.Data;
-using System.Text.Json;
 using System.Text.RegularExpressions;
 using UnitsNet;
 
@@ -7,8 +6,13 @@ namespace ClassLibrary1
 {
     public class Calculator
     {
-        public List<MathLog> Memory = new List<MathLog>();
-        public int MemoryPosition { get; private set; }
+        private Repository _repository;
+        
+        public Calculator(Repository repository)
+        {
+            _repository = repository;
+        }
+
         public double Add(double v1, double v2)
         {
             return v1 + v2;
@@ -18,64 +22,27 @@ namespace ClassLibrary1
             return v1 + v2;
         }
 
-        public void SaveMemory(string filePath)
-        {
-            if (Memory.Any(m => m.Result == null))
-            {
-                throw new JsonException("Result cannot be null");
-            }
-
-            var options = new JsonSerializerOptions();
-            options.WriteIndented = true;
-            options.Converters.Add(new QuantityJsonConverter());
-            var json = JsonSerializer.Serialize(Memory, options);
-            File.WriteAllText(filePath, json);
-        }
-
-        public void LoadMemory(string filePath)
-        {
-            if (!File.Exists(filePath))
-            {
-                throw new FileNotFoundException("File Not Found", filePath);
-            }
-
-            var json = File.ReadAllText(filePath);
-            var options = new JsonSerializerOptions();
-            options.Converters.Add(new QuantityJsonConverter());
-            options.WriteIndented = true;
-            var deserializedMemory = JsonSerializer.Deserialize<List<MathLog>>(json, options);
-
-            Memory.Clear();
-
-            foreach (var item in deserializedMemory)
-            {
-                Memory.Add(item);
-            }
-
-            MemoryPosition = 0;
-        }
-
         public MathLog Calculate(string input)
         {
-            var maxPosition = Memory.Count() - 1;
+            var maxPosition = _repository.Memory.Count() - 1;
             var minPosition = 0;
             switch (input)
             {
                 case "next":
-                    if (MemoryPosition < maxPosition) MemoryPosition++;
+                    if (_repository.MemoryPosition < maxPosition) _repository.MemoryPosition++;
                     break;
 
                 case "previous":
-                    if (MemoryPosition > minPosition) MemoryPosition--;
+                    if (_repository.MemoryPosition > minPosition) _repository.MemoryPosition--;
                     break;
 
                 default:
                     var mathLog = EvaluateAndCalculate(input);
-                    Memory.Add(mathLog);
-                    MemoryPosition = Memory.IndexOf(mathLog);
+                    _repository.Memory.Add(mathLog);
+                    _repository.MemoryPosition = _repository.Memory.IndexOf(mathLog);                    
                     break;
             }
-            return Memory[MemoryPosition];
+            return _repository.Memory[_repository.MemoryPosition];
         }
         private MathLog EvaluateAndCalculate(string input)
         {
