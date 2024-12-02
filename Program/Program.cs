@@ -10,10 +10,10 @@ namespace NewProject
             Calculator calculator = new Calculator();
             const string filePath = @"C:\temp\Calculator.json";
             calculator.LoadMemory(filePath);
-            Console.WriteLine("Options:");
-            Console.WriteLine("1. Calculate");
-            Console.WriteLine("2. Save");
-            Console.WriteLine("3. Leave");
+                Console.WriteLine("Options:");
+                Console.WriteLine("1. Calculate");
+                Console.WriteLine("2. Save");
+                Console.WriteLine("3. Leave");
             Console.WriteLine();
 
             while (true)

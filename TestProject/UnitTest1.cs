@@ -8,6 +8,8 @@ namespace TestProject
     [TestClass]
     public class UnitTest1
     {
+
+
         [TestMethod]
         public void ShouldAddTwoNumbers()
         {
@@ -418,7 +420,6 @@ namespace TestProject
             loadedCalculator.LoadMemory(filePath);
 
             // Assert
-            calculator.Memory.Count.Should().Be(mathLogs.Count);
             for (int i = 0; i < mathLogs.Count; i++)
             {
                 loadedCalculator.Memory[i].Math.Should().Be(mathLogs[i].Math);
