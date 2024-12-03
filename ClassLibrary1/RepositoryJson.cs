@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace ClassLibrary1
+namespace Calc
 {
     public class RepositoryJson : IRepository
     {
