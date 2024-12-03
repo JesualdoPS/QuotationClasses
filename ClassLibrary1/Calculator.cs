@@ -6,13 +6,11 @@ namespace ClassLibrary1
 {
     public class Calculator
     {
-        private RepositoryJson _jsonRepository;
-
-        private RepositoryXml _xmlRepository;
+        private IRepository _repository;
         
-        public Calculator(RepositoryJson repository)
+        public Calculator(IRepository repository)
         {
-            _jsonRepository = repository;
+            _repository = repository;
         }
         
         public double Add(double v1, double v2)
@@ -26,25 +24,25 @@ namespace ClassLibrary1
 
         public MathLog Calculate(string input)
         {
-            var maxPosition = _jsonRepository.Memory.Count() - 1;
+            var maxPosition = _repository.Memory.Count() - 1;
             var minPosition = 0;
             switch (input)
             {
                 case "next":
-                    if (_jsonRepository.MemoryPosition < maxPosition) _jsonRepository.MemoryPosition++;
+                    if (_repository.MemoryPosition < maxPosition) _repository.MemoryPosition++;
                     break;
 
                 case "previous":
-                    if (_jsonRepository.MemoryPosition > minPosition) _jsonRepository.MemoryPosition--;
+                    if (_repository.MemoryPosition > minPosition) _repository.MemoryPosition--;
                     break;
 
                 default:
                     var mathLog = EvaluateAndCalculate(input);
-                    _jsonRepository.Memory.Add(mathLog);
-                    _jsonRepository.MemoryPosition = _jsonRepository.Memory.IndexOf(mathLog);                    
+                    _repository.Memory.Add(mathLog);
+                    _repository.MemoryPosition = _repository.Memory.IndexOf(mathLog);                    
                     break;
             }
-            return _jsonRepository.Memory[_jsonRepository.MemoryPosition];
+            return _repository.Memory[_repository.MemoryPosition];
         }
         private MathLog EvaluateAndCalculate(string input)
         {

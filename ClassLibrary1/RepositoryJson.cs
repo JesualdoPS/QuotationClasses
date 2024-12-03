@@ -2,9 +2,9 @@
 
 namespace ClassLibrary1
 {
-    public class RepositoryJson
+    public class RepositoryJson : IRepository
     {
-        public List<MathLog> Memory = new List<MathLog>();
+        public List<MathLog> Memory { get; set; } = new List<MathLog>();
         public int MemoryPosition { get; set; }
         public void SaveMemory(string filePath)
         {
@@ -14,8 +14,6 @@ namespace ClassLibrary1
             }
 
             var options = new JsonSerializerOptions { WriteIndented = true };
-
-            options.Converters.Add(new QuantityJsonConverter());
             var json = JsonSerializer.Serialize(Memory.ToEntities(), options);
             File.WriteAllText(filePath, json);
         }
