@@ -26,6 +26,7 @@ namespace ClassLibrary1
                 if (reader.TokenType == JsonTokenType.PropertyName)
                 {
                     string propertyName = reader.GetString();
+
                     reader.Read();
 
                     switch (propertyName)

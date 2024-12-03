@@ -12,7 +12,7 @@ namespace TestProject
         public void ShouldAddTwoNumbers()
         {
             //Arrange
-            var repository = new Repository();
+            var repository = new RepositoryJson();
             var calculator = new Calculator(repository);
 
             //Act
@@ -27,7 +27,7 @@ namespace TestProject
         public void ShouldAddAStringWithALengthBasedUnitOfMeasure()
         {
             //Arrange
-            var repository = new Repository();
+            var repository = new RepositoryJson();
             var calculator = new Calculator(repository);
 
             //Act
@@ -41,7 +41,7 @@ namespace TestProject
         public void ShouldSubtractAStringWithALengthBasedUnitOfMeasure()
         {
             //Arrange
-            var repository = new Repository();
+            var repository = new RepositoryJson();
             var calculator = new Calculator(repository);
 
             //Act
@@ -55,7 +55,7 @@ namespace TestProject
         public void ShouldMultiplyAStringWithALengthBasedUnitOfMeasure()
         {
             //Arrange
-            var repository = new Repository();
+            var repository = new RepositoryJson();
             var calculator = new Calculator(repository);
 
             //Act
@@ -69,7 +69,7 @@ namespace TestProject
         public void ShouldAddAStringWithALengthBasedUnitOfMeasureInMillimeters()
         {
             //Arrange
-            var repository = new Repository();
+            var repository = new RepositoryJson();
             var calculator = new Calculator(repository);
 
             //Act
@@ -83,7 +83,7 @@ namespace TestProject
         public void ShouldSubtractAStringWithALengthBasedUnitOfMeasureInMillimeters()
         {
             //Arrange
-            var repository = new Repository();
+            var repository = new RepositoryJson();
             var calculator = new Calculator(repository);
 
             //Act
@@ -97,7 +97,7 @@ namespace TestProject
         public void ShouldMultiplyAStringWithALengthBasedUnitOfMeasureInMillimeters()
         {
             //Arrange
-            var repository = new Repository();
+            var repository = new RepositoryJson();
             var calculator = new Calculator(repository);
 
             //Act
@@ -111,7 +111,7 @@ namespace TestProject
         public void ShouldThrowExceptionWhenUnsupportedOperatorSymbolIsUsed()
         {
             // Arrange
-            var repository = new Repository();
+            var repository = new RepositoryJson();
             var calculator = new Calculator(repository);
 
             // Act e Assert
@@ -122,7 +122,7 @@ namespace TestProject
         public void ShouldThrowExceptionWhenUnsupportedOperatorSymbolIsUsed_Millimeter()
         {
             // Arrange
-            var repository = new Repository();
+            var repository = new RepositoryJson();
             var calculator = new Calculator(repository);
 
             // Act e Assert
@@ -132,7 +132,7 @@ namespace TestProject
         public void ShouldThrowExceptionWhenUnsupportedOperatorSymbolIsUsed_NotationWithoutSpaces()
         {
             // Arrange
-            var repository = new Repository();
+            var repository = new RepositoryJson();
             var calculator = new Calculator(repository);
 
             // Act e Assert
@@ -143,7 +143,7 @@ namespace TestProject
         public void ShouldThrowExceptionWhenUnsupportedOperatorSymbolIsUsed_Millimeter_NotationWithoutSpaces()
         {
             // Arrange
-            var repository = new Repository();
+            var repository = new RepositoryJson();
             var calculator = new Calculator(repository);
 
             // Act e Assert
@@ -154,7 +154,7 @@ namespace TestProject
         public void ShouldThrowExceptionWhenExpressionDoesNotHaveAllParts()
         {
             // Arrange
-            var repository = new Repository();
+            var repository = new RepositoryJson();
             var calculator = new Calculator(repository);
 
             // Act
@@ -168,7 +168,7 @@ namespace TestProject
         public void ShouldAddAStringWithALengthBasedUnitOfMeasure_NotationWithoutSpaces()
         {
             //Arrange
-            var repository = new Repository();
+            var repository = new RepositoryJson();
             var calculator = new Calculator(repository);
 
             //Act
@@ -182,7 +182,7 @@ namespace TestProject
         public void ShouldAddTwoLenghts()
         {
             //Arrange
-            var repository = new Repository();
+            var repository = new RepositoryJson();
             var calculator = new Calculator(repository);
             var length1 = Length.FromMeters(1);
             var length2 = Length.FromMeters(1);
@@ -199,7 +199,7 @@ namespace TestProject
         public void ShouldMultiplyTwoLenghts()
         {
             //Arrange
-            var repository = new Repository();
+            var repository = new RepositoryJson();
             var calculator = new Calculator(repository);
             var length1 = Length.FromMeters(1);
             var length2 = Length.FromMeters(1);
@@ -217,7 +217,7 @@ namespace TestProject
         public void ShouldMultiplyThreeLenghts()
         {
             //Arrange
-            var repository = new Repository();
+            var repository = new RepositoryJson();
             var calculator = new Calculator(repository);
             var lenght1 = Length.FromMeters(1);
             var lenght2 = Length.FromMeters(1);
@@ -236,7 +236,7 @@ namespace TestProject
         public void ShouldCalculateWeightOfWater()
         {
             //Arrange
-            var repository = new Repository();
+            var repository = new RepositoryJson();
             var waterWeight = new Calculator(repository);
             var waterVolume = Volume.FromCubicMeters(1);
 
@@ -252,7 +252,7 @@ namespace TestProject
         public void ShouldCalculateWeightOfSteel()
         {
             //Arrange
-            var repository = new Repository();
+            var repository = new RepositoryJson();
             var steelWeight = new Calculator(repository);
             var steelVolume = Volume.FromCubicMeters(1);
 
@@ -268,7 +268,7 @@ namespace TestProject
         public void ShouldCalculateWeightOfAluminum()
         {
             //Arrange
-            var repository = new Repository();
+            var repository = new RepositoryJson();
             var aluminumWeight = new Calculator(repository);
             var aluminumVolume = Volume.FromCubicMeters(1);
 
@@ -284,7 +284,7 @@ namespace TestProject
         public void ShouldMemorizeACalculation()
         {
             //Arrange
-            var repository = new Repository();
+            var repository = new RepositoryJson();
             var calculator = new Calculator(repository);
 
             //Act
@@ -298,7 +298,7 @@ namespace TestProject
         public void ShouldMemorizeEachCalculation()
         {
             //Arrange
-            var repository = new Repository();
+            var repository = new RepositoryJson();
             var calculator = new Calculator(repository);
 
             //Act
@@ -313,7 +313,7 @@ namespace TestProject
         public void ShouldMemorizeCurrentMemoryPosition()
         {
             //Arrange
-            var repository = new Repository();
+            var repository = new RepositoryJson();
             var calculator = new Calculator(repository);
 
             //Act
@@ -328,7 +328,7 @@ namespace TestProject
         public void ShouldShowPreviousCalculation()
         {
             //Arrange
-            var repository = new Repository();
+            var repository = new RepositoryJson();
             var calculator = new Calculator(repository);
 
             //Act
@@ -346,7 +346,7 @@ namespace TestProject
         public void ShouldShowNextCalculation()
         {
             //Arrange
-            var repository = new Repository();
+            var repository = new RepositoryJson();
             var calculator = new Calculator(repository);
 
             //Act
@@ -366,7 +366,7 @@ namespace TestProject
         public void ShouldNotDoNextIfOnLastItemInMemory()
         {
             //Arrange
-            var repository = new Repository();
+            var repository = new RepositoryJson();
             var calculator = new Calculator(repository);
 
             //Act
@@ -383,7 +383,7 @@ namespace TestProject
         public void ShouldNotDoPreviousIfOnFirstItemInMemory()
         {
             //Arrange
-            var repository = new Repository();
+            var repository = new RepositoryJson();
             var calculator = new Calculator(repository);
 
             //Act
@@ -399,7 +399,7 @@ namespace TestProject
         public void ShouldCalculaterAStringWithMetersAndMillimeterBasedUnitOfMeasure()
         {
             //Arrange
-            var repository = new Repository();
+            var repository = new RepositoryJson();
             var calculator = new Calculator(repository);
 
 

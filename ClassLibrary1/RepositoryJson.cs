@@ -2,7 +2,7 @@
 
 namespace ClassLibrary1
 {
-    public class Repository
+    public class RepositoryJson
     {
         public List<MathLog> Memory = new List<MathLog>();
         public int MemoryPosition { get; set; }
@@ -13,12 +13,10 @@ namespace ClassLibrary1
                 throw new JsonException("Result cannot be null");
             }
 
-            var options = new JsonSerializerOptions
-            {
-                WriteIndented = true
-            };
+            var options = new JsonSerializerOptions { WriteIndented = true };
+
             options.Converters.Add(new QuantityJsonConverter());
-            var json = JsonSerializer.Serialize(Memory, options);
+            var json = JsonSerializer.Serialize(Memory.ToEntities(), options);
             File.WriteAllText(filePath, json);
         }
 
@@ -34,12 +32,11 @@ namespace ClassLibrary1
             {
                 WriteIndented = true
             };
-            options.Converters.Add(new QuantityJsonConverter());
-            var deserializedMemory = JsonSerializer.Deserialize<List<MathLog>>(json, options);
+            var deserializedMemory = JsonSerializer.Deserialize<List<MathLogEntity>>(json, options);
             Memory.Clear();
             foreach (var item in deserializedMemory)
             {
-                Memory.Add(item);
+                Memory.Add(item.FromEntity());
             }
             MemoryPosition = 0;
         }
