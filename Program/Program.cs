@@ -1,5 +1,4 @@
 ﻿using ClassLibrary1;
-using UnitsNet;
 
 namespace NewProject
 {
@@ -7,9 +6,10 @@ namespace NewProject
     {
         static void Main(string[] args)
         {
-            Calculator calculator = new Calculator();
+            var repository = new RepositoryXml();
+            var calculator = new Calculator(repository);
             const string filePath = @"C:\temp\Calculator.json";
-            calculator.LoadMemory(filePath);
+            repository.LoadMemory(filePath);
                 Console.WriteLine("Options:");
                 Console.WriteLine("1. Calculate");
                 Console.WriteLine("2. Save");
@@ -31,7 +31,7 @@ namespace NewProject
                         break;
 
                     case "2":
-                        calculator.SaveMemory(filePath);
+                        repository.SaveMemory(filePath);
                         Console.WriteLine("Data saved!");
                         break;
 
