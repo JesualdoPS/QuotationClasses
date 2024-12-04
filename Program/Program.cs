@@ -6,7 +6,7 @@ namespace NewProject
     {
         static void Main(string[] args)
         {
-            var repository = new RepositoryXml();
+            var repository = new RepositorySQL();
             var calculator = new Calculator(repository);
             const string filePath = @"C:\temp\Calculator.json";
             repository.LoadMemory(filePath);
