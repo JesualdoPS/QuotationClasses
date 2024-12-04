@@ -1,5 +1,5 @@
 using System.Text.Json;
-using ClassLibrary1;
+using Calc;
 using FluentAssertions;
 using UnitsNet;
 

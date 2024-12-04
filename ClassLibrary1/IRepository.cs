@@ -1,4 +1,4 @@
-﻿namespace ClassLibrary1
+﻿namespace Calc
 {
     public interface IRepository
     {

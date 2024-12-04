@@ -1,4 +1,4 @@
-﻿namespace ClassLibrary1
+﻿namespace Calc
 {
     public enum Materials
     {

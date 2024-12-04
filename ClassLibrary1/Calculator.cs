@@ -2,7 +2,7 @@
 using System.Text.RegularExpressions;
 using UnitsNet;
 
-namespace ClassLibrary1
+namespace Calc
 {
     public class Calculator
     {

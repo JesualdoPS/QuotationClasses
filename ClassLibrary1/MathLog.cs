@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 using Newtonsoft.Json.Linq;
 using UnitsNet;
 
-namespace ClassLibrary1
+namespace Calc
 {
     public class MathLog
     {

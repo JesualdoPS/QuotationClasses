@@ -2,7 +2,7 @@
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace ClassLibrary1
+namespace Calc
 {
     public class RepositoryXml : IRepository
     {
