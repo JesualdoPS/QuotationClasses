@@ -1,22 +1,31 @@
 ﻿using System.Data;
 using System.Text.RegularExpressions;
+using Calc.Persistance;
 using UnitsNet;
 
-namespace Calc
+namespace Calc.BusinessLogic
 {
     public class Calculator
     {
         private IRepository _repository;
-        
+
+        private Dictionary<Materials, Mass> _densities = new Dictionary<Materials, Mass>()
+            {
+                {Materials.Water, Mass.FromKilograms(1000)},
+                {Materials.Steel, Mass.FromKilograms(7850)},
+                {Materials.Aluminum, Mass.FromKilograms(2600)}
+            };
+
         public Calculator(IRepository repository)
         {
             _repository = repository;
         }
-        
+
         public double Add(double v1, double v2)
         {
             return v1 + v2;
         }
+
         public Length Add(Length v1, Length v2)
         {
             return v1 + v2;
@@ -39,7 +48,7 @@ namespace Calc
                 default:
                     var mathLog = EvaluateAndCalculate(input);
                     _repository.Memory.Add(mathLog);
-                    _repository.MemoryPosition = _repository.Memory.IndexOf(mathLog);                    
+                    _repository.MemoryPosition = _repository.Memory.IndexOf(mathLog);
                     break;
             }
             return _repository.Memory[_repository.MemoryPosition];
@@ -53,11 +62,11 @@ namespace Calc
             if (matchingParts.Count < 5)
                 throw new ArgumentException("Invalid Expression");
 
-            Length value1 = (matchingParts[1].Value == "m")
+            Length value1 = matchingParts[1].Value == "m"
                 ? Length.FromMeters(Convert.ToDouble(matchingParts[0].Value))
                 : Length.FromMillimeters(Convert.ToDouble(matchingParts[0].Value));
 
-            Length value2 = (matchingParts[4].Value == "m")
+            Length value2 = matchingParts[4].Value == "m"
                 ? Length.FromMeters(Convert.ToDouble(matchingParts[3].Value))
                 : Length.FromMillimeters(Convert.ToDouble(matchingParts[3].Value));
 
@@ -88,14 +97,7 @@ namespace Calc
 
         public Mass CalculateWeight(Volume materialVolume, Materials material)
         {
-            var densities = new Dictionary<Materials, Mass>()
-            {
-                {Materials.Water, Mass.FromKilograms(1000)},
-                {Materials.Steel, Mass.FromKilograms(7850)},
-                {Materials.Aluminum, Mass.FromKilograms(2600)}
-            };
-
-            var density = densities[material];
+            var density = _densities[material];
             var mass = Mass.FromKilograms(density.Kilograms * materialVolume.CubicMeters);
             return mass;
         }

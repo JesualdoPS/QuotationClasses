@@ -1,4 +1,6 @@
-﻿using Calc;
+﻿using Calc.Persistance;
+using Calc.BusinessLogic;
+using UnitsNet;
 
 namespace NewProject
 {
@@ -6,14 +8,15 @@ namespace NewProject
     {
         static void Main(string[] args)
         {
-            var repository = new RepositorySQL();
+            var repository = new RepositoryXml();
             var calculator = new Calculator(repository);
-            const string filePath = @"C:\temp\Calculator.json";
+            const string filePath = 
+                @"D:\Material de aula\Aula de Programação\curso_C#\Aulas\QuotationFactory\Calculator.xml";
             repository.LoadMemory(filePath);
-                Console.WriteLine("Options:");
-                Console.WriteLine("1. Calculate");
-                Console.WriteLine("2. Save");
-                Console.WriteLine("3. Leave");
+            Console.WriteLine("Options:");
+            Console.WriteLine("1. Calculate");
+            Console.WriteLine("2. Save");
+            Console.WriteLine("3. Leave");
             Console.WriteLine();
 
             while (true)

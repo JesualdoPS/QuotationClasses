@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace Calc
+namespace Calc.Persistance
 {
     public class RepositoryJson : IRepository
     {
@@ -26,11 +26,9 @@ namespace Calc
             }
 
             var json = File.ReadAllText(filePath);
-            var options = new JsonSerializerOptions
-            {
-                WriteIndented = true
-            };
-            var deserializedMemory = JsonSerializer.Deserialize<List<MathLogEntity>>(json, options);
+
+            var deserializedMemory = JsonSerializer.Deserialize<List<MathLogEntity>>(json);
+
             Memory.Clear();
             foreach (var item in deserializedMemory)
             {

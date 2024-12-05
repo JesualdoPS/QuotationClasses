@@ -1,5 +1,6 @@
 using System.Text.Json;
-using Calc;
+using Calc.BusinessLogic;
+using Calc.Persistance;
 using FluentAssertions;
 using UnitsNet;
 

@@ -1,4 +1,4 @@
-﻿namespace Calc
+﻿namespace Calc.BusinessLogic
 {
     public enum Materials
     {

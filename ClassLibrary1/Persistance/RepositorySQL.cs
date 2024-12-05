@@ -1,33 +1,33 @@
 ﻿using Microsoft.Data.SqlClient;
 
-namespace Calc
+namespace Calc.Persistance
 {
     public class RepositorySQL : IRepository
     {
-        public readonly SQLConnection connection;
+        public readonly DatabaseConnection _databaseConnection;
         public List<MathLog> Memory { get; set; } = new List<MathLog>();
         public int MemoryPosition { get; set; }
         public RepositorySQL()
         {
-            connection = new SQLConnection();
+            _databaseConnection = new DatabaseConnection();
         }
 
         public void SaveMemory(string filePath)
         {
-            using (var database = connection.Connect())
+            using (var connection = _databaseConnection.Connect())
             {
                 var entities = Memory.ToEntities();
-                database.Open();
-                var clearTable = new SqlCommand("truncate table MathLogEntities;", database);
+                connection.Open();
+                var clearTable = new SqlCommand("truncate table MathLogEntities;", connection);
                 clearTable.ExecuteNonQuery();
                 foreach (var entity in entities)
-                {                    
-                    var cmd = new SqlCommand("INSERT INTO MathLogEntities (Math, ResultValue, ResultUnit) VALUES (@Math, @ResultValue, @ResultUnit)", database);
-                    cmd.Parameters.AddWithValue("@Math", entity.Math);
-                    cmd.Parameters.AddWithValue("@ResultValue", entity.ResultValue);
-                    cmd.Parameters.AddWithValue("@ResultUnit", entity.ResultUnit);
+                {
+                    var command = new SqlCommand("INSERT INTO MathLogEntities (Math, ResultValue, ResultUnit) VALUES (@Math, @ResultValue, @ResultUnit)", connection);
+                    command.Parameters.AddWithValue("@Math", entity.Math);
+                    command.Parameters.AddWithValue("@ResultValue", entity.ResultValue);
+                    command.Parameters.AddWithValue("@ResultUnit", entity.ResultUnit);
 
-                    cmd.ExecuteNonQuery();
+                    command.ExecuteNonQuery();
                 }
             }
         }
@@ -36,12 +36,12 @@ namespace Calc
         {
             var entities = new List<MathLogEntity>();
 
-            using (var conn = connection.Connect())
+            using (var dbCalculator = _databaseConnection.Connect())
             {
-                conn.Open();
+                dbCalculator.Open();
 
-                var cmd = new SqlCommand("SELECT * FROM MathLogEntities", conn);
-                var reader = cmd.ExecuteReader();
+                var command = new SqlCommand("SELECT * FROM MathLogEntities", dbCalculator);
+                var reader = command.ExecuteReader();
 
                 while (reader.Read())
                 {

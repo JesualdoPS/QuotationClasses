@@ -1,4 +1,4 @@
-﻿namespace Calc
+﻿namespace Calc.Persistance
 {
     public interface IRepository
     {

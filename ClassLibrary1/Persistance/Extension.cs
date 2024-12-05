@@ -1,23 +1,8 @@
-﻿using System.Runtime.CompilerServices;
-using System.Text.Json.Serialization;
-using Newtonsoft.Json.Linq;
-using UnitsNet;
+﻿using UnitsNet;
 
-namespace Calc
+namespace Calc.Persistance
 {
-    public class MathLog
-    {
-        public string Math { get; set; }
-        public IQuantity Result { get; set; }
-    }
-    public class MathLogEntity
-    {
-        public string Math { get; set; }
-        public double ResultValue { get; set; }
-        public string ResultUnit { get; set; }
-    }
-
-    public static class Extensions
+    public static class Extension
     {
         public static List<MathLogEntity> ToEntities(this List<MathLog> memory)
         {
@@ -27,9 +12,9 @@ namespace Calc
                 entities.Add(mathLog.ToEntity());
             }
             return entities;
-        } 
-           
-        public static MathLogEntity ToEntity ( this MathLog mathLog  )
+        }
+
+        public static MathLogEntity ToEntity(this MathLog mathLog)
         {
             var entity = new MathLogEntity
             {
@@ -40,12 +25,12 @@ namespace Calc
             return entity;
         }
 
-        public static MathLog FromEntity( this MathLogEntity entity)
+        public static MathLog FromEntity(this MathLogEntity entity)
         {
             double value = entity.ResultValue;
-
             string unit = entity.ResultUnit;
-            var quantity =  ToIQuantity(value, unit);
+
+            var quantity = ToIQuantity(value, unit);
             var mathLog = new MathLog()
             {
                 Math = entity.Math,
@@ -57,7 +42,6 @@ namespace Calc
 
         private static IQuantity ToIQuantity(double value, string unit)
         {
-
             switch (unit)
             {
                 case "Meter":

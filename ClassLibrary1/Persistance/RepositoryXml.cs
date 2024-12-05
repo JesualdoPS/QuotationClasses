@@ -2,7 +2,7 @@
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace Calc
+namespace Calc.Persistance
 {
     public class RepositoryXml : IRepository
     {
@@ -23,7 +23,7 @@ namespace Calc
             options.Indent = true;
 
             var xmlSerializer = new XmlSerializer(typeof(List<MathLogEntity>));
-            using(var writer = new StreamWriter(filePath))
+            using (var writer = XmlWriter.Create(filePath, options))
             {
                 xmlSerializer.Serialize(writer, entities);
             }
@@ -33,7 +33,7 @@ namespace Calc
         {
             if (!File.Exists(filePath))
             {
-                throw new FileNotFoundException("File Not Found", filePath);
+                throw new FileNotFoundException("File Not Found");
             }
 
             var xmlDeserializer = new XmlSerializer(typeof(List<MathLogEntity>));
