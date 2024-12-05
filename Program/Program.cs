@@ -1,6 +1,5 @@
-﻿using Calc.Persistance;
-using Calc.BusinessLogic;
-using UnitsNet;
+﻿using Calc.BusinessLogic;
+using Calc.Persistance;
 
 namespace NewProject
 {
@@ -10,7 +9,7 @@ namespace NewProject
         {
             var repository = new RepositoryXml();
             var calculator = new Calculator(repository);
-            const string filePath = 
+            const string filePath =
                 @"D:\Material de aula\Aula de Programação\curso_C#\Aulas\QuotationFactory\Calculator.xml";
             repository.LoadMemory(filePath);
             Console.WriteLine("Options:");
