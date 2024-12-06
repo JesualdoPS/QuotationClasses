@@ -10,7 +10,7 @@ namespace TestProject
     public class CalculatorAppTests
     {
         [TestMethod]
-        public void ShouldSerializeMathLogToJson()
+        public void Should()
         {
 
         }

@@ -6,7 +6,12 @@ namespace Calc.Persistance
 {
     public class RepositoryXml : IRepository
     {
-        public List<MathLog> Memory { get; set; } = new List<MathLog>();
+        public RepositoryXml(List<MathLog> memory)
+        {
+            Memory = memory;
+        }
+
+        public List<MathLog> Memory { get; }
 
         public int MemoryPosition { get; set; }
 

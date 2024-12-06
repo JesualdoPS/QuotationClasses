@@ -2,7 +2,7 @@
 {
     public interface IRepository
     {
-        List<MathLog> Memory { get; set; }
+        List<MathLog> Memory { get; }
         int MemoryPosition { get; set; }
 
         void LoadMemory(string filePath);

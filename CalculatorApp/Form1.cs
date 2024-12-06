@@ -133,8 +133,7 @@ namespace CalculatorApp
         {
             string filePath =
                 @"D:\Material de aula\Aula de Programação\curso_C#\Aulas\QuotationFactory\Storage\Calculator.xml";
-            _repository = new RepositoryXml();
-            _repository.Memory = _calculator.Memory;
+            _repository = new RepositoryXml(_calculator.Memory);
             _repository.SaveMemory(filePath);
         }
 
@@ -142,8 +141,7 @@ namespace CalculatorApp
         {
             string filePath =
                 @"D:\Material de aula\Aula de Programação\curso_C#\Aulas\QuotationFactory\Storage\Calculator.json";
-            _repository = new RepositoryJson();
-            _repository.Memory = _calculator.Memory;
+            _repository = new RepositoryJson(_calculator.Memory);
             _repository.SaveMemory(filePath);
         }
 

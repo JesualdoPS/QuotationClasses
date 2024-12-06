@@ -9,7 +9,6 @@ namespace Calc.BusinessLogic
     {
         private IRepository _repository;
         public List<MathLog> Memory { get; set; } = new List<MathLog>();
-        public int MemoryPosition { get; set; }
 
         private Dictionary<Materials, Mass> _densities = new Dictionary<Materials, Mass>()
             {
