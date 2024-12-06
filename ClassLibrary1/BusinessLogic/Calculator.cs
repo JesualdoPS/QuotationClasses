@@ -8,6 +8,8 @@ namespace Calc.BusinessLogic
     public class Calculator
     {
         private IRepository _repository;
+        public List<MathLog> Memory { get; set; } = new List<MathLog>();
+        public int MemoryPosition { get; set; }
 
         private Dictionary<Materials, Mass> _densities = new Dictionary<Materials, Mass>()
             {
@@ -48,6 +50,7 @@ namespace Calc.BusinessLogic
                 default:
                     var mathLog = EvaluateAndCalculate(input);
                     _repository.Memory.Add(mathLog);
+                    Memory.Add(mathLog);
                     _repository.MemoryPosition = _repository.Memory.IndexOf(mathLog);
                     break;
             }

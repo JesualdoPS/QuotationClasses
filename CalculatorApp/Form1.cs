@@ -16,17 +16,9 @@ namespace CalculatorApp
 
             _repository = new RepositorySQL();
             _calculator = new Calculator(_repository);
-        }       
-
-        private void screen_TextChanged(object sender, EventArgs e)
-        {
-
         }
 
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
+        private void screen_TextChanged(object sender, EventArgs e) { }
 
         private void btn1_Click(object sender, EventArgs e)
         {
@@ -114,14 +106,15 @@ namespace CalculatorApp
         }
 
         private void btnEqualTo_Click(object sender, EventArgs e)
-        {            
+        {
             var result = _calculator.Calculate(screen.Text);
             screen.Text = Convert.ToString(result.Result);
         }
 
         private void btnBackspace_Click(object sender, EventArgs e)
         {
-            
+            screen.Text = screen.Text.Substring(0, screen.Text.Length - 1);
+            screen.SelectionStart = screen.Text.Length;
         }
 
         private void btnClearEverything_Click(object sender, EventArgs e)
@@ -131,27 +124,37 @@ namespace CalculatorApp
 
         private void saveSQL_Click(object sender, EventArgs e)
         {
-
+            string filePath = "";
+            _repository.SaveMemory(filePath);
+            screen.Text = "Data Saved on dbCalculator";
         }
 
         private void saveXML_Click(object sender, EventArgs e)
         {
-
+            string filePath =
+                @"D:\Material de aula\Aula de Programação\curso_C#\Aulas\QuotationFactory\Storage\Calculator.xml";
+            _repository = new RepositoryXml();
+            _repository.Memory = _calculator.Memory;
+            _repository.SaveMemory(filePath);
         }
 
         private void saveJson_Click(object sender, EventArgs e)
         {
-
+            string filePath =
+                @"D:\Material de aula\Aula de Programação\curso_C#\Aulas\QuotationFactory\Storage\Calculator.json";
+            _repository = new RepositoryJson();
+            _repository.Memory = _calculator.Memory;
+            _repository.SaveMemory(filePath);
         }
 
         private void Previous_Click(object sender, EventArgs e)
         {
-
+            screen.Text = _calculator.Calculate("previous").ToString();
         }
 
         private void Next_Click(object sender, EventArgs e)
         {
-
+            screen.Text = _calculator.Calculate("next").ToString();
         }
     }
 }

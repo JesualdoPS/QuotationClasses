@@ -55,7 +55,6 @@
             btn1 = new Button();
             btnMeter = new Button();
             btnSpace = new Button();
-            label1 = new Label();
             colorDialog1 = new ColorDialog();
             SuspendLayout();
             // 
@@ -209,7 +208,7 @@
             btnMultiply.Name = "btnMultiply";
             btnMultiply.Size = new Size(100, 60);
             btnMultiply.TabIndex = 14;
-            btnMultiply.Text = "x";
+            btnMultiply.Text = "*";
             btnMultiply.UseVisualStyleBackColor = true;
             btnMultiply.Click += btnMultiply_Click;
             // 
@@ -355,21 +354,11 @@
             btnSpace.UseVisualStyleBackColor = true;
             btnSpace.Click += btnSpace_Click;
             // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Location = new Point(26, 42);
-            label1.Name = "label1";
-            label1.Size = new Size(0, 15);
-            label1.TabIndex = 29;
-            label1.Click += label1_Click;
-            // 
-            // Form1
+            // CalculatorApp
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
-            Controls.Add(label1);
             Controls.Add(btnSpace);
             Controls.Add(btnMeter);
             Controls.Add(btn1);
@@ -396,7 +385,7 @@
             Controls.Add(btn4);
             Controls.Add(btn3);
             Controls.Add(btn2);
-            Name = "Form1";
+            Name = "CalculatorApp";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Calculadora";
             ResumeLayout(false);
@@ -430,7 +419,6 @@
         private Button btn1;
         private Button btnMeter;
         private Button btnSpace;
-        private Label label1;
         private ColorDialog colorDialog1;
     }
 }

@@ -22,7 +22,7 @@ namespace TestProject
                 new MathLog { Math = "3 mm * 3 mm", Result = Area.FromSquareMillimeters(9) }
             };
             repository.Memory = mathLogs;
-            var filePath = @"D:\Material de aula\Aula de Programação\curso_C#\Aulas\QuotationFactory\Calculator.json";
+            var filePath = @"D:\Material de aula\Aula de Programação\curso_C#\Aulas\QuotationFactory\Storage\Calculator.json";
 
             // Act
             repository.SaveMemory(filePath);
@@ -93,7 +93,7 @@ namespace TestProject
                 new MathLog { Math = "15 x + 5 x", Result = null }
             };
             repository.Memory = mathLogs;
-            var filePath = @"D:\Material de aula\Aula de Programação\curso_C#\Aulas\QuotationFactory\Calculator.json";
+            var filePath = @"D:\Material de aula\Aula de Programação\curso_C#\Aulas\QuotationFactory\Storage\Calculator.json";
 
             // Act
             Action action = () => repository.SaveMemory(filePath);
@@ -129,7 +129,7 @@ namespace TestProject
                 new MathLog { Math = "3 mm * 3 mm", Result = Area.FromSquareMillimeters(9)}
             };
             repository.Memory = mathLogs;
-            var filePath = @"D:\Material de aula\Aula de Programação\curso_C#\Aulas\QuotationFactory\Calculator.xml";
+            var filePath = @"D:\Material de aula\Aula de Programação\curso_C#\Aulas\QuotationFactory\Storage\Calculator.xml";
 
             // Act
             repository.SaveMemory(filePath);
@@ -150,7 +150,7 @@ namespace TestProject
                 new MathLog { Math = "15 m + 5 m", Result = Length.FromMeters(20)},
                 new MathLog { Math = "10 m * 2 m", Result = null},
             };
-            var filePath = @"D:\Material de aula\Aula de Programação\curso_C#\Aulas\QuotationFactory\Calculator.xml";
+            var filePath = @"D:\Material de aula\Aula de Programação\curso_C#\Aulas\QuotationFactory\Storage\Calculator.xml";
             repository.Memory = mathLogs;
 
             // Act
