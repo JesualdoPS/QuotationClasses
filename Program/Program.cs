@@ -1,5 +1,6 @@
 ﻿using Calc.BusinessLogic;
 using Calc.Persistance;
+using Microsoft.IdentityModel.Tokens;
 
 namespace NewProject
 {
@@ -7,7 +8,7 @@ namespace NewProject
     {
         static void Main(string[] args)
         {
-            var repository = new RepositoryXml();
+            var repository = new RepositoryJson();
             var calculator = new Calculator(repository);
             const string filePath =
                 @"D:\Material de aula\Aula de Programação\curso_C#\Aulas\QuotationFactory\Calculator.xml";
@@ -27,8 +28,8 @@ namespace NewProject
                 {
                     case "1":
                         Console.Write("Type a question: ");
-                        string calculation = Console.ReadLine();
-                        var result = calculator.Calculate(calculation);
+                        string expression = Console.ReadLine();
+                        var result = calculator.Calculate(expression);
                         Console.WriteLine(result.Result);
                         break;
 

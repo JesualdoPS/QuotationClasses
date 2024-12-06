@@ -9,8 +9,6 @@ namespace TestProject
     [TestClass]
     public class CalculatorTests
     {
-
-
         [TestMethod]
         public void ShouldAddTwoNumbers()
         {
