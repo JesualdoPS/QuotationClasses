@@ -1,10 +1,17 @@
-﻿using System.Text.Json;
+﻿using System;
+using System.Text.Json;
 
 namespace Calc.Persistance
 {
     public class RepositoryJson : IRepository
     {
-        public List<MathLog> Memory { get; set; } = new List<MathLog>();
+        public RepositoryJson(List<MathLog> memory = null)
+        {
+            if (memory == null) { Memory = new List<MathLog>(); } else { Memory = memory; }
+            
+        }
+        public List<MathLog> Memory { get; }
+
         public int MemoryPosition { get; set; }
         public void SaveMemory(string filePath)
         {

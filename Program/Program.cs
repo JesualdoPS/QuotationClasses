@@ -8,7 +8,7 @@ namespace NewProject
     {
         static void Main(string[] args)
         {
-            var repository = new RepositoryJson();
+            var repository = new RepositoryXml();
             var calculator = new Calculator(repository);
             const string filePath =
                 @"D:\Material de aula\Aula de Programação\curso_C#\Aulas\QuotationFactory\Calculator.xml";

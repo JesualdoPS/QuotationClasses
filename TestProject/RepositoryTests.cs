@@ -13,7 +13,7 @@ namespace TestProject
         public void ShouldSerializeMathLogToJson()
         {
             // Arrange
-            var repository = new RepositoryJson();
+            
             var mathLogs = new List<MathLog>
             {
                 new MathLog { Math = "15 m + 5 m", Result = Length.FromMeters(20) },
@@ -21,7 +21,7 @@ namespace TestProject
                 new MathLog { Math = "5 mm - 3 mm", Result = Length.FromMillimeters(2) },
                 new MathLog { Math = "3 mm * 3 mm", Result = Area.FromSquareMillimeters(9) }
             };
-            repository.Memory = mathLogs;
+            var repository = new RepositoryJson(mathLogs);
             var filePath = @"D:\Material de aula\Aula de Programação\curso_C#\Aulas\QuotationFactory\Storage\Calculator.json";
 
             // Act
@@ -87,12 +87,11 @@ namespace TestProject
         public void ShouldThrowJsonException_WhenSerializingInvalidMathLog()
         {
             // Arrange
-            var repository = new RepositoryJson();
             var mathLogs = new List<MathLog>
             {
                 new MathLog { Math = "15 x + 5 x", Result = null }
             };
-            repository.Memory = mathLogs;
+            var repository = new RepositoryJson(mathLogs);
             var filePath = @"D:\Material de aula\Aula de Programação\curso_C#\Aulas\QuotationFactory\Storage\Calculator.json";
 
             // Act
@@ -120,7 +119,6 @@ namespace TestProject
         public void ShouldSerializeMathLogToXml()
         {
             // Arrange
-            var repository = new RepositoryXml();
             var mathLogs = new List<MathLog>
             {
                 new MathLog { Math = "15 m + 5 m", Result = Length.FromMeters(20)},
@@ -128,7 +126,7 @@ namespace TestProject
                 new MathLog { Math = "5 mm - 3 mm", Result = Length.FromMillimeters(2)},
                 new MathLog { Math = "3 mm * 3 mm", Result = Area.FromSquareMillimeters(9)}
             };
-            repository.Memory = mathLogs;
+            var repository = new RepositoryXml(mathLogs);
             var filePath = @"D:\Material de aula\Aula de Programação\curso_C#\Aulas\QuotationFactory\Storage\Calculator.xml";
 
             // Act
@@ -144,14 +142,14 @@ namespace TestProject
         public void ShouldThrowExceptionWhenResultIsNull()
         {
             // Arrange
-            var repository = new RepositoryXml();
+
             var mathLogs = new List<MathLog>
             {
                 new MathLog { Math = "15 m + 5 m", Result = Length.FromMeters(20)},
                 new MathLog { Math = "10 m * 2 m", Result = null},
             };
             var filePath = @"D:\Material de aula\Aula de Programação\curso_C#\Aulas\QuotationFactory\Storage\Calculator.xml";
-            repository.Memory = mathLogs;
+            var repository = new RepositoryXml(mathLogs);
 
             // Act
             Action action = () => repository.SaveMemory(filePath);
