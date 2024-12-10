@@ -1,5 +1,5 @@
-﻿using Calc.BusinessLogic;
-using Calc.Persistance;
+﻿using Calc.Persistance;
+using Contracts;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CalculatorWeb.Controllers
@@ -8,9 +8,9 @@ namespace CalculatorWeb.Controllers
     [Route("Calculator")]
     public class CalculatorController : ControllerBase
     {
-        private readonly Calculator _calculator;
+        private readonly ICalculator _calculator;
 
-        public CalculatorController(Calculator calculator)
+        public CalculatorController(ICalculator calculator)
         {
             _calculator = calculator;
         }
