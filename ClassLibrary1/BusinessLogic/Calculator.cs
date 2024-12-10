@@ -1,6 +1,7 @@
 ﻿using System.Data;
 using System.Text.RegularExpressions;
 using Calc.Persistance;
+using Contracts;
 using UnitsNet;
 
 namespace Calc.BusinessLogic

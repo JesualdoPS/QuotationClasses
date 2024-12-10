@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using System.Xml;
 using Calc.Persistance;
+using Contracts;
 using FluentAssertions;
 using UnitsNet;
 

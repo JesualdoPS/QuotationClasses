@@ -1,6 +1,6 @@
 ﻿using UnitsNet;
 
-namespace Calc.Persistance
+namespace Contracts
 {
     public class MathLog
     {

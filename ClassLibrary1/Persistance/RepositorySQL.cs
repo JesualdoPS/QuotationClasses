@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using Contracts;
+using Microsoft.Data.SqlClient;
 
 namespace Calc.Persistance
 {

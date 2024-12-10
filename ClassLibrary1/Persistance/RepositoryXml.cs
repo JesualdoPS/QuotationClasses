@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using System.Xml;
 using System.Xml.Serialization;
+using Contracts;
 
 namespace Calc.Persistance
 {

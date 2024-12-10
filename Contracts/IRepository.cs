@@ -1,4 +1,6 @@
-﻿namespace Calc.Persistance
+﻿
+
+namespace Contracts
 {
     public interface IRepository
     {
