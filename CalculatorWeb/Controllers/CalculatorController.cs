@@ -10,9 +10,9 @@ namespace CalculatorWeb.Controllers
     {
         private readonly Calculator _calculator;
 
-        public CalculatorController(IRepository repository)
+        public CalculatorController(Calculator calculator)
         {
-            _calculator = new Calculator(repository);
+            _calculator = calculator;
         }
 
         [HttpPost("Calculate")]
