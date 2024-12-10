@@ -2,6 +2,7 @@ using System.Text;
 using Calc.Persistance;
 using Newtonsoft.Json;
 
+
 namespace CalculatorApp
 {
     public partial class CalculatorApp : Form
@@ -115,7 +116,7 @@ namespace CalculatorApp
             var json = JsonConvert.SerializeObject(request);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.PostAsync("Calculator/Calculate", content);
+            var response = await _httpClient.PostAsync("/Calculator/Calculate", content);
 
             if (response.IsSuccessStatusCode)
             {
@@ -123,11 +124,14 @@ namespace CalculatorApp
                 var mathLog = JsonConvert.DeserializeObject<MathLogEntity>(jsonResult);
                 var result = mathLog.FromEntity();
                 screen.Text = result.Result.ToString();
+
+                var responseBody = await response.Content.ReadAsStringAsync();
+                Console.WriteLine(responseBody);
             }
             else
             {
                 MessageBox.Show("Error sending data: " + response.StatusCode);
-            }
+            }            
         }
 
         private void btnBackspace_Click(object sender, EventArgs e)
