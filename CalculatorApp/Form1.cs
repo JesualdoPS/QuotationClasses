@@ -7,16 +7,9 @@ namespace CalculatorApp
 {
     public partial class CalculatorApp : Form
     {
-        private readonly HttpClient _httpClient;
-        private class CalculateRequest
-        {
-            public string Input { get; set; }
-        }
         public CalculatorApp()
         {
-            InitializeComponent();
-            _httpClient = new HttpClient();
-            _httpClient.BaseAddress = new Uri("https://localhost:7299");
+            InitializeComponent();            
         }
 
         private void screen_TextChanged(object sender, EventArgs e) { }
@@ -108,30 +101,10 @@ namespace CalculatorApp
 
         private async void btnEqualTo_Click(object sender, EventArgs e)
         {
-            //var result = _calculator.Calculate(screen.Text);
-            //screen.Text = Convert.ToString(result.Result);
-
             var input = screen.Text;
-            var request = new CalculateRequest { Input = input };
-            var json = JsonConvert.SerializeObject(request);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-            var response = await _httpClient.PostAsync("/Calculator/Calculate", content);
-
-            if (response.IsSuccessStatusCode)
-            {
-                var jsonResult = await response.Content.ReadAsStringAsync();
-                var mathLog = JsonConvert.DeserializeObject<MathLogEntity>(jsonResult);
-                var result = mathLog.FromEntity();
-                screen.Text = result.Result.ToString();
-
-                var responseBody = await response.Content.ReadAsStringAsync();
-                Console.WriteLine(responseBody);
-            }
-            else
-            {
-                MessageBox.Show("Error sending data: " + response.StatusCode);
-            }            
+            var api = new WebApiClient();
+            var mathLog = await api.Calculate(input);
+            screen.Text = mathLog.Result.ToString();
         }
 
         private void btnBackspace_Click(object sender, EventArgs e)
