@@ -1,7 +1,6 @@
 ﻿using Calc.BusinessLogic;
 using Calc.Persistance;
 using Microsoft.AspNetCore.Mvc;
-using UnitsNet;
 
 namespace CalculatorWeb.Controllers
 {

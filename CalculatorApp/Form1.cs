@@ -1,21 +1,21 @@
-using System.Data;
-using System.DirectoryServices.ActiveDirectory;
-using Calc.BusinessLogic;
+using System.Text;
 using Calc.Persistance;
+using Newtonsoft.Json;
 
 namespace CalculatorApp
 {
     public partial class CalculatorApp : Form
     {
-        private IRepository _repository;
-        private Calculator _calculator;
-
+        private readonly HttpClient _httpClient;
+        private class CalculateRequest
+        {
+            public string Input { get; set; }
+        }
         public CalculatorApp()
         {
             InitializeComponent();
-
-            _repository = new RepositorySQL();
-            _calculator = new Calculator(_repository);
+            _httpClient = new HttpClient();
+            _httpClient.BaseAddress = new Uri("https://localhost:7299");
         }
 
         private void screen_TextChanged(object sender, EventArgs e) { }
@@ -105,10 +105,29 @@ namespace CalculatorApp
             screen.Text += " * ";
         }
 
-        private void btnEqualTo_Click(object sender, EventArgs e)
+        private async void btnEqualTo_Click(object sender, EventArgs e)
         {
-            var result = _calculator.Calculate(screen.Text);
-            screen.Text = Convert.ToString(result.Result);
+            //var result = _calculator.Calculate(screen.Text);
+            //screen.Text = Convert.ToString(result.Result);
+
+            var input = screen.Text;
+            var request = new CalculateRequest { Input = input };
+            var json = JsonConvert.SerializeObject(request);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PostAsync("Calculator/Calculate", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var jsonResult = await response.Content.ReadAsStringAsync();
+                var mathLog = JsonConvert.DeserializeObject<MathLogEntity>(jsonResult);
+                var result = mathLog.FromEntity();
+                screen.Text = result.Result.ToString();
+            }
+            else
+            {
+                MessageBox.Show("Error sending data: " + response.StatusCode);
+            }
         }
 
         private void btnBackspace_Click(object sender, EventArgs e)
@@ -124,35 +143,35 @@ namespace CalculatorApp
 
         private void saveSQL_Click(object sender, EventArgs e)
         {
-            string filePath = "";
-            _repository.SaveMemory(filePath);
-            screen.Text = "Data Saved on dbCalculator";
+            //string filePath = "";
+            //_repository.SaveMemory(filePath);
+            //screen.Text = "Data Saved on dbCalculator";
         }
 
         private void saveXML_Click(object sender, EventArgs e)
         {
-            string filePath =
-                @"D:\Material de aula\Aula de Programação\curso_C#\Aulas\QuotationFactory\Storage\Calculator.xml";
-            _repository = new RepositoryXml(_calculator.Memory);
-            _repository.SaveMemory(filePath);
+            //string filePath =
+            //    @"D:\Material de aula\Aula de Programação\curso_C#\Aulas\QuotationFactory\Storage\Calculator.xml";
+            //_repository = new RepositoryXml(_calculator.Memory);
+            //_repository.SaveMemory(filePath);
         }
 
         private void saveJson_Click(object sender, EventArgs e)
         {
-            string filePath =
-                @"D:\Material de aula\Aula de Programação\curso_C#\Aulas\QuotationFactory\Storage\Calculator.json";
-            _repository = new RepositoryJson(_calculator.Memory);
-            _repository.SaveMemory(filePath);
+            //string filePath =
+            //    @"D:\Material de aula\Aula de Programação\curso_C#\Aulas\QuotationFactory\Storage\Calculator.json";
+            //_repository = new RepositoryJson(_calculator.Memory);
+            //_repository.SaveMemory(filePath);
         }
 
         private void Previous_Click(object sender, EventArgs e)
         {
-            screen.Text = _calculator.Calculate("previous").ToString();
+            //screen.Text = _calculator.Calculate("previous").ToString();
         }
 
         private void Next_Click(object sender, EventArgs e)
         {
-            screen.Text = _calculator.Calculate("next").ToString();
+            //screen.Text = _calculator.Calculate("next").ToString();
         }
     }
 }

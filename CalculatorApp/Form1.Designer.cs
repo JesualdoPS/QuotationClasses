@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CalculatorApp));
             btn2 = new Button();
             btn3 = new Button();
@@ -56,6 +57,8 @@
             btnMeter = new Button();
             btnSpace = new Button();
             colorDialog1 = new ColorDialog();
+            bindingSource1 = new BindingSource(components);
+            ((System.ComponentModel.ISupportInitialize)bindingSource1).BeginInit();
             SuspendLayout();
             // 
             // btn2
@@ -388,6 +391,7 @@
             Name = "CalculatorApp";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Calculadora";
+            ((System.ComponentModel.ISupportInitialize)bindingSource1).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -420,5 +424,6 @@
         private Button btnMeter;
         private Button btnSpace;
         private ColorDialog colorDialog1;
+        private BindingSource bindingSource1;
     }
 }
