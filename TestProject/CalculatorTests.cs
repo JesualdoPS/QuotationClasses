@@ -1,5 +1,6 @@
 using Calc.BusinessLogic;
 using Calc.Persistance;
+using Contracts;
 using FluentAssertions;
 using UnitsNet;
 

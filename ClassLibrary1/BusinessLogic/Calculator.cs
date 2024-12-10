@@ -1,12 +1,11 @@
 ﻿using System.Data;
 using System.Text.RegularExpressions;
-using Calc.Persistance;
 using Contracts;
 using UnitsNet;
 
 namespace Calc.BusinessLogic
 {
-    public class Calculator
+    public class Calculator : ICalculator
     {
         private IRepository _repository;
         public List<MathLog> Memory { get; set; } = new List<MathLog>();

@@ -1,4 +1,4 @@
-﻿namespace Calc.BusinessLogic
+﻿namespace Contracts
 {
     public enum Materials
     {
