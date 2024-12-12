@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text.Json;
+﻿using System.Text.Json;
 using Contracts;
 
 namespace Calc.Persistance
@@ -9,7 +8,7 @@ namespace Calc.Persistance
         public RepositoryJson(List<MathLog> memory = null)
         {
             if (memory == null) { Memory = new List<MathLog>(); } else { Memory = memory; }
-            
+
         }
         public List<MathLog> Memory { get; }
 
