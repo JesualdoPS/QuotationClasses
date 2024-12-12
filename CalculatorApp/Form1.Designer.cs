@@ -58,6 +58,7 @@
             btnSpace = new Button();
             colorDialog1 = new ColorDialog();
             bindingSource1 = new BindingSource(components);
+            btnDivide = new Button();
             ((System.ComponentModel.ISupportInitialize)bindingSource1).BeginInit();
             SuspendLayout();
             // 
@@ -174,9 +175,9 @@
             // btnEqualTo
             // 
             btnEqualTo.Font = new Font("Maiandra GD", 30F);
-            btnEqualTo.Location = new Point(483, 378);
+            btnEqualTo.Location = new Point(326, 378);
             btnEqualTo.Name = "btnEqualTo";
-            btnEqualTo.Size = new Size(100, 60);
+            btnEqualTo.Size = new Size(151, 60);
             btnEqualTo.TabIndex = 11;
             btnEqualTo.Text = "=";
             btnEqualTo.UseVisualStyleBackColor = true;
@@ -349,19 +350,31 @@
             btnSpace.BackgroundImage = (Image)resources.GetObject("btnSpace.BackgroundImage");
             btnSpace.BackgroundImageLayout = ImageLayout.Zoom;
             btnSpace.Font = new Font("Maiandra GD", 30F);
-            btnSpace.Location = new Point(326, 378);
+            btnSpace.Location = new Point(695, 378);
             btnSpace.Name = "btnSpace";
-            btnSpace.Size = new Size(151, 60);
+            btnSpace.Size = new Size(100, 60);
             btnSpace.TabIndex = 28;
             btnSpace.Text = " ";
             btnSpace.UseVisualStyleBackColor = true;
             btnSpace.Click += btnSpace_Click;
+            // 
+            // btnDivide
+            // 
+            btnDivide.Font = new Font("Maiandra GD", 30F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            btnDivide.Location = new Point(483, 378);
+            btnDivide.Name = "btnDivide";
+            btnDivide.Size = new Size(100, 60);
+            btnDivide.TabIndex = 29;
+            btnDivide.Text = "/";
+            btnDivide.UseVisualStyleBackColor = true;
+            btnDivide.Click += btnDivide_Click;
             // 
             // CalculatorApp
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(btnDivide);
             Controls.Add(btnSpace);
             Controls.Add(btnMeter);
             Controls.Add(btn1);
@@ -425,5 +438,6 @@
         private Button btnSpace;
         private ColorDialog colorDialog1;
         private BindingSource bindingSource1;
+        private Button btnDivide;
     }
 }

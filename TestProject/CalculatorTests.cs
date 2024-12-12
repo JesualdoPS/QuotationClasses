@@ -10,14 +10,14 @@ namespace TestProject
     public class CalculatorTests
     {
         [TestMethod]
-        public void ShouldAddTwoNumbers()
+        public async Task ShouldAddTwoNumbers()
         {
             //Arrange
             var repository = new RepositoryJson();
             var calculator = new Calculator(repository);
 
             //Act
-            var result = calculator.Add(1, 1);
+            var result = await calculator.Add(1, 1);
 
 
             //Assert
@@ -25,197 +25,208 @@ namespace TestProject
         }
 
         [TestMethod]
-        public void ShouldAddAStringWithALengthBasedUnitOfMeasure()
+        public async Task ShouldSubtractTwoNumbers()
         {
             //Arrange
             var repository = new RepositoryJson();
             var calculator = new Calculator(repository);
 
             //Act
-            var result = calculator.Calculate("12 m + 2 m");
+            var result = await calculator.Subtract(2, 1);
+
+
+            //Assert
+            result.Should().Be(1);
+        }
+
+        [TestMethod]
+        public async Task ShouldMultiplyTwoNumbers()
+        {
+            //Arrange
+            var repository = new RepositoryJson();
+            var calculator = new Calculator(repository);
+
+            //Act
+            var result = await calculator.Multiply(2, 3);
+
+
+            //Assert
+            result.Should().Be(6);
+        }
+
+        [TestMethod]
+        public async Task ShouldDivideTwoNumbers()
+        {
+            //Arrange
+            var repository = new RepositoryJson();
+            var calculator = new Calculator(repository);
+
+            //Act
+            var result = await calculator.Divide(10, 2);
+
+
+            //Assert
+            result.Should().Be(5);
+        }
+
+        [TestMethod]
+        public async Task ShouldAddAStringWithALengthBasedUnitOfMeasure()
+        {
+            //Arrange
+            var repository = new RepositoryJson();
+            var calculator = new Calculator(repository);
+
+            //Act
+            var result = await calculator.Calculate("12 m + 2 m");
 
             //Assert
             result.Result.Should().Be(Length.FromMeters(14));
         }
 
         [TestMethod]
-        public void ShouldSubtractAStringWithALengthBasedUnitOfMeasure()
+        public async Task ShouldSubtractAStringWithALengthBasedUnitOfMeasure()
         {
             //Arrange
             var repository = new RepositoryJson();
             var calculator = new Calculator(repository);
 
             //Act
-            var result = calculator.Calculate("12 m - 2 m");
+            var result = await calculator.Calculate("12 m - 2 m");
 
             //Assert
             result.Result.Should().Be(Length.FromMeters(10));
         }
 
         [TestMethod]
-        public void ShouldMultiplyAStringWithALengthBasedUnitOfMeasure()
+        public async Task ShouldMultiplyAStringWithALengthBasedUnitOfMeasure()
         {
             //Arrange
             var repository = new RepositoryJson();
             var calculator = new Calculator(repository);
 
             //Act
-            var result = calculator.Calculate("12 m * 2 m");
+            var result = await calculator.Calculate("12 m * 2 m");
 
             //Assert
             result.Result.Should().Be(Area.FromSquareMeters(24));
         }
 
         [TestMethod]
-        public void ShouldAddAStringWithALengthBasedUnitOfMeasureInMillimeters()
+        public async Task ShouldAddAStringWithALengthBasedUnitOfMeasureInMillimeters()
         {
             //Arrange
             var repository = new RepositoryJson();
             var calculator = new Calculator(repository);
 
             //Act
-            var result = calculator.Calculate("12 mm + 2 mm");
+            var result = await calculator.Calculate("12 mm + 2 mm");
 
             //Assert
             result.Result.Should().Be(Length.FromMillimeters(14));
         }
 
         [TestMethod]
-        public void ShouldSubtractAStringWithALengthBasedUnitOfMeasureInMillimeters()
+        public async Task ShouldSubtractAStringWithALengthBasedUnitOfMeasureInMillimeters()
         {
             //Arrange
             var repository = new RepositoryJson();
             var calculator = new Calculator(repository);
 
             //Act
-            var result = calculator.Calculate("12 mm - 2 mm");
+            var result = await calculator.Calculate("12 mm - 2 mm");
 
             //Assert
             result.Result.Should().Be(Length.FromMillimeters(10));
         }
 
         [TestMethod]
-        public void ShouldMultiplyAStringWithALengthBasedUnitOfMeasureInMillimeters()
+        public async Task ShouldMultiplyAStringWithALengthBasedUnitOfMeasureInMillimeters()
         {
             //Arrange
             var repository = new RepositoryJson();
             var calculator = new Calculator(repository);
 
             //Act
-            var result = calculator.Calculate("12 mm * 2 mm");
+            var result = await calculator.Calculate("12 mm * 2 mm");
 
             //Assert
             ((Area)result.Result).SquareMillimeters.Should().Be(24);
         }
 
         [TestMethod]
-        public void ShouldThrowExceptionWhenUnsupportedOperatorSymbolIsUsed()
+        public async Task ShouldThrowExceptionWhenUnsupportedOperatorSymbolIsUsed()
         {
             // Arrange
             var repository = new RepositoryJson();
             var calculator = new Calculator(repository);
 
             // Act e Assert
-            Assert.ThrowsException<FormatException>(() => calculator.Calculate("12 m : 2 m "));
+            await Assert.ThrowsExceptionAsync<FormatException>(() => calculator.Calculate("12 m : 2 m "));
         }
 
         [TestMethod]
-        public void ShouldThrowExceptionWhenUnsupportedOperatorSymbolIsUsed_Millimeter()
+        public async Task ShouldThrowExceptionWhenUnsupportedOperatorSymbolIsUsed_Millimeter()
         {
             // Arrange
             var repository = new RepositoryJson();
             var calculator = new Calculator(repository);
 
             // Act e Assert
-            Assert.ThrowsException<FormatException>(() => calculator.Calculate("12 mm : 2 mm"));
+            await Assert.ThrowsExceptionAsync<FormatException>(() => calculator.Calculate("12 mm : 2 mm"));
         }
+
         [TestMethod]
-        public void ShouldThrowExceptionWhenUnsupportedOperatorSymbolIsUsed_NotationWithoutSpaces()
+        public async Task ShouldThrowExceptionWhenUnsupportedOperatorSymbolIsUsed_NotationWithoutSpaces()
         {
             // Arrange
             var repository = new RepositoryJson();
             var calculator = new Calculator(repository);
 
             // Act e Assert
-            Assert.ThrowsException<FormatException>(() => calculator.Calculate("12m:2m"));
+            await Assert.ThrowsExceptionAsync<FormatException>(() => calculator.Calculate("12m:2m"));
         }
 
         [TestMethod]
-        public void ShouldThrowExceptionWhenUnsupportedOperatorSymbolIsUsed_Millimeter_NotationWithoutSpaces()
+        public async Task ShouldThrowExceptionWhenUnsupportedOperatorSymbolIsUsed_Millimeter_NotationWithoutSpaces()
         {
             // Arrange
             var repository = new RepositoryJson();
             var calculator = new Calculator(repository);
 
             // Act e Assert
-            Assert.ThrowsException<FormatException>(() => calculator.Calculate("12mm:2mm"));
+            await Assert.ThrowsExceptionAsync<FormatException>(() => calculator.Calculate("12mm:2mm"));
         }
 
         [TestMethod]
-        public void ShouldThrowExceptionWhenExpressionDoesNotHaveAllParts()
+        public async Task ShouldThrowExceptionWhenExpressionDoesNotHaveAllParts()
         {
             // Arrange
             var repository = new RepositoryJson();
             var calculator = new Calculator(repository);
 
             // Act
-            Action result = () => calculator.Calculate("15m+15");
+            Func<Task> result = async () => await calculator.Calculate("15m+15");
 
             // Assert
-            result.Should().Throw<ArgumentException>();
+            await result.Should().ThrowAsync<ArgumentException>();
         }
 
         [TestMethod]
-        public void ShouldAddAStringWithALengthBasedUnitOfMeasure_NotationWithoutSpaces()
+        public async Task ShouldAddAStringWithALengthBasedUnitOfMeasure_NotationWithoutSpaces()
         {
             //Arrange
             var repository = new RepositoryJson();
             var calculator = new Calculator(repository);
 
             //Act
-            var result = calculator.Calculate("12m+2m");
+            var result = await calculator.Calculate("12m+2m");
 
             //Assert
             result.Result.Should().Be(Length.FromMeters(14));
         }
-
+        
         [TestMethod]
-        public void ShouldAddTwoLenghts()
-        {
-            //Arrange
-            var repository = new RepositoryJson();
-            var calculator = new Calculator(repository);
-            var length1 = Length.FromMeters(1);
-            var length2 = Length.FromMeters(1);
-
-            //Act
-            var result = calculator.Add(length1, length2);
-
-
-            //Assert
-            result.Meters.Should().Be(2);
-        }
-
-        [TestMethod]
-        public void ShouldMultiplyTwoLenghts()
-        {
-            //Arrange
-            var repository = new RepositoryJson();
-            var calculator = new Calculator(repository);
-            var length1 = Length.FromMeters(1);
-            var length2 = Length.FromMeters(1);
-
-
-            //Act
-            var result = calculator.Multiply(length1, length2);
-
-
-            //Assert
-            result.SquareMillimeters.Should().Be(1000000.0);
-        }
-
-        [TestMethod]
-        public void ShouldMultiplyThreeLenghts()
+        public async Task ShouldMultiplyThreeLenghts()
         {
             //Arrange
             var repository = new RepositoryJson();
@@ -226,15 +237,15 @@ namespace TestProject
 
 
             //Act
-            var result = calculator.Multiply(lenght1, lenght2, lenght3);
+            var result = await calculator.MultiplyVolume(lenght1, lenght2, lenght3);
 
 
             //Assert
-            result.CubicMeters.Should().Be(1);
+            result.Should().Be(Volume.FromCubicMeters(1));
         }
 
         [TestMethod]
-        public void ShouldCalculateWeightOfWater()
+        public async Task ShouldCalculateWeightOfWater()
         {
             //Arrange
             var repository = new RepositoryJson();
@@ -242,15 +253,15 @@ namespace TestProject
             var waterVolume = Volume.FromCubicMeters(1);
 
             //Act
-            var result = waterWeight.CalculateWeight(waterVolume, Materials.Water);
+            var result = await waterWeight.CalculateWeight(waterVolume, Materials.Water);
 
 
             //Assert
-            result.Kilograms.Should().Be(1000);
+            result.Should().Be(Mass.FromKilograms(1000));
         }
 
         [TestMethod]
-        public void ShouldCalculateWeightOfSteel()
+        public async Task ShouldCalculateWeightOfSteel()
         {
             //Arrange
             var repository = new RepositoryJson();
@@ -258,15 +269,15 @@ namespace TestProject
             var steelVolume = Volume.FromCubicMeters(1);
 
             //Act
-            var result = steelWeight.CalculateWeight(steelVolume, Materials.Steel);
+            var result = await steelWeight.CalculateWeight(steelVolume, Materials.Steel);
 
 
             //Assert
-            result.Kilograms.Should().Be(7850);
+            result.Should().Be(Mass.FromKilograms(7850));
         }
 
         [TestMethod]
-        public void ShouldCalculateWeightOfAluminum()
+        public async Task ShouldCalculateWeightOfAluminum()
         {
             //Arrange
             var repository = new RepositoryJson();
@@ -274,11 +285,11 @@ namespace TestProject
             var aluminumVolume = Volume.FromCubicMeters(1);
 
             //Act
-            var result = aluminumWeight.CalculateWeight(aluminumVolume, Materials.Aluminum);
+            var result = await aluminumWeight.CalculateWeight(aluminumVolume, Materials.Aluminum);
 
 
             //Assert
-            result.Kilograms.Should().Be(2600);
+            result.Should().Be(Mass.FromKilograms(2600));
         }
 
         [TestMethod]
@@ -326,17 +337,17 @@ namespace TestProject
         }
 
         [TestMethod]
-        public void ShouldShowPreviousCalculation()
+        public async Task ShouldShowPreviousCalculation()
         {
             //Arrange
             var repository = new RepositoryJson();
             var calculator = new Calculator(repository);
 
             //Act
-            calculator.Calculate("15 mm - 10 mm");
-            calculator.Calculate("35 mm - 20 mm");
-            calculator.Calculate("50 mm - 30 mm");
-            var result = calculator.Calculate("previous");
+            await calculator.Calculate("15 mm - 10 mm");
+            await calculator.Calculate("35 mm - 20 mm");
+            await calculator.Calculate("50 mm - 30 mm");
+            var result = await calculator.Calculate("previous");
 
             //Assert
             result.Math.Should().Be("35 mm - 20 mm");
@@ -344,19 +355,19 @@ namespace TestProject
         }
 
         [TestMethod]
-        public void ShouldShowNextCalculation()
+        public async Task ShouldShowNextCalculation()
         {
             //Arrange
             var repository = new RepositoryJson();
             var calculator = new Calculator(repository);
 
             //Act
-            calculator.Calculate("15 mm - 10 mm");
-            calculator.Calculate("35 mm - 20 mm");
-            calculator.Calculate("50 mm - 30 mm");
-            calculator.Calculate("previous");
-            calculator.Calculate("previous");
-            var result = calculator.Calculate("next");
+            await calculator.Calculate("15 mm - 10 mm");
+            await calculator.Calculate("35 mm - 20 mm");
+            await calculator.Calculate("50 mm - 30 mm");
+            await calculator.Calculate("previous");
+            await calculator.Calculate("previous");
+            var result = await calculator.Calculate("next");
 
             //Assert
             result.Math.Should().Be("35 mm - 20 mm");
@@ -364,16 +375,16 @@ namespace TestProject
         }
 
         [TestMethod]
-        public void ShouldNotDoNextIfOnLastItemInMemory()
+        public async Task ShouldNotDoNextIfOnLastItemInMemory()
         {
             //Arrange
             var repository = new RepositoryJson();
             var calculator = new Calculator(repository);
 
             //Act
-            calculator.Calculate("15 mm - 10 mm");
-            calculator.Calculate("35 mm - 20 mm");
-            var result = calculator.Calculate("next");
+            await calculator.Calculate("15 mm - 10 mm");
+            await calculator.Calculate("35 mm - 20 mm");
+            var result = await calculator.Calculate("next");
 
             //Assert
             result.Math.Should().Be("35 mm - 20 mm");
@@ -381,15 +392,15 @@ namespace TestProject
         }
 
         [TestMethod]
-        public void ShouldNotDoPreviousIfOnFirstItemInMemory()
+        public async Task ShouldNotDoPreviousIfOnFirstItemInMemory()
         {
             //Arrange
             var repository = new RepositoryJson();
             var calculator = new Calculator(repository);
 
             //Act
-            calculator.Calculate("35 mm - 20 mm");
-            var result = calculator.Calculate("previous");
+            await calculator.Calculate("35 mm - 20 mm");
+            var result = await calculator.Calculate("previous");
 
             //Assert
             result.Math.Should().Be("35 mm - 20 mm");
@@ -397,7 +408,7 @@ namespace TestProject
         }
 
         [TestMethod]
-        public void ShouldCalculaterAStringWithMetersAndMillimeterBasedUnitOfMeasure()
+        public async Task ShouldCalculaterAStringWithMetersAndMillimeterBasedUnitOfMeasure()
         {
             //Arrange
             var repository = new RepositoryJson();
@@ -405,9 +416,9 @@ namespace TestProject
 
 
             //Act
-            var result1 = calculator.Calculate("15 m + 5 mm");
-            var result2 = calculator.Calculate("15 m - 5 mm");
-            var result3 = calculator.Calculate("15 m * 5 mm");
+            var result1 = await calculator.Calculate("15 m + 5 mm");
+            var result2 = await calculator.Calculate("15 m - 5 mm");
+            var result3 = await calculator.Calculate("15 m * 5 mm");
 
             //Assert
             result1.Result.Should().Be(Length.FromMeters(15.005));

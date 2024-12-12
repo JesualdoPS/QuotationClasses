@@ -5,12 +5,12 @@ namespace Contracts
     public interface ICalculator
     {
         List<MathLog> Memory { get; set; }
-
-        double Add(double v1, double v2);
-        Length Add(Length v1, Length v2);
-        MathLog Calculate(string input);
-        Mass CalculateWeight(Volume materialVolume, Materials material);
-        Area Multiply(Length length1, Length length2);
-        Volume Multiply(Length length1, Length length2, Length lenght3);
+        Task<double> Add(double v1, double v2);
+        Task<double>Subtract(double v1, double v2);
+        Task<double> Multiply(double v1, double v2);
+        Task<double> Divide(double v1, double v2);
+        Task<MathLog> Calculate(string input);
+        Task<Mass> CalculateWeight(Volume materialVolume, Materials material);
+        Task<Volume> MultiplyVolume(Length length1, Length length2, Length lenght3);
     }
 }

@@ -1,15 +1,19 @@
-using System.Text;
-using Calc.Persistance;
-using Newtonsoft.Json;
+using System.Text.RegularExpressions;
+using Azure.Core;
+using Contracts;
+using UnitsNet;
 
 
 namespace CalculatorApp
 {
     public partial class CalculatorApp : Form
     {
+        private readonly ICalculator _calculator;
+
         public CalculatorApp()
         {
-            InitializeComponent();            
+            InitializeComponent();
+            _calculator = new Calculator();
         }
 
         private void screen_TextChanged(object sender, EventArgs e) { }
@@ -98,13 +102,59 @@ namespace CalculatorApp
         {
             screen.Text += " * ";
         }
-
+        private void btnDivide_Click(object sender, EventArgs e)
+        {
+            screen.Text += " / ";
+        }
         private async void btnEqualTo_Click(object sender, EventArgs e)
         {
-            var input = screen.Text;
-            var api = new WebApiClient();
-            var mathLog = await api.Calculate(input);
-            screen.Text = mathLog.Result.ToString();
+            if (screen.Text.Contains("m") || screen.Text.Contains("mm"))
+            {
+                if (Regex.Matches(screen.Text, "m|mm").Count == 2)
+                {
+                    var mathLog = await _calculator.Calculate(screen.Text);
+                    screen.Text = mathLog.Result.ToString();
+                }
+                else if (Regex.Matches(screen.Text, "m|mm").Count > 2)
+                {
+                    MatchCollection matchingParts = Regex.Matches(screen.Text, @"(\d+)|(m{1,2})|([+*/-])");
+
+                    Length length1 = matchingParts[1].Value == "m"
+                ? Length.FromMeters(Convert.ToDouble(matchingParts[0].Value))
+                : Length.FromMillimeters(Convert.ToDouble(matchingParts[0].Value));
+
+                    Length length2 = matchingParts[4].Value == "m"
+                ? Length.FromMeters(Convert.ToDouble(matchingParts[3].Value))
+                : Length.FromMillimeters(Convert.ToDouble(matchingParts[3].Value));
+
+                    Length length3 = matchingParts[7].Value == "m"
+                ? Length.FromMeters(Convert.ToDouble(matchingParts[6].Value))
+                : Length.FromMillimeters(Convert.ToDouble(matchingParts[6].Value));
+
+                    var result = await _calculator.MultiplyVolume(length1, length2, length3);
+                    screen.Text = result.ToString();
+                }
+
+                else
+                {
+                    throw new FormatException("Invalid Expression");
+                }
+            }
+            else
+            {
+                MatchCollection matchingParts = Regex.Matches(screen.Text, @"(\d+)|([+*/-])");
+                double value1 = Convert.ToDouble(matchingParts[0].Value);
+                double value2 = Convert.ToDouble(matchingParts[2].Value);
+                var operatorSymbol = matchingParts[1].Value;
+                double result = operatorSymbol switch
+                {
+                    "+" => await _calculator.Add(value1, value2),
+                    "-" => await _calculator.Subtract(value1, value2),
+                    "*" => await _calculator.Multiply(value1, value2),
+                    "/" => await _calculator.Add(value1, value2)
+                };
+                screen.Text = result.ToString();
+            }
         }
 
         private void btnBackspace_Click(object sender, EventArgs e)
@@ -141,14 +191,16 @@ namespace CalculatorApp
             //_repository.SaveMemory(filePath);
         }
 
-        private void Previous_Click(object sender, EventArgs e)
+        private async void Previous_Click(object sender, EventArgs e)
         {
-            //screen.Text = _calculator.Calculate("previous").ToString();
+            var previous = await _calculator.Calculate("previous");
+            screen.Text = previous.ToString();
         }
 
-        private void Next_Click(object sender, EventArgs e)
+        private async void Next_Click(object sender, EventArgs e)
         {
-            //screen.Text = _calculator.Calculate("next").ToString();
+            var previous = await _calculator.Calculate("next");
+            screen.Text = previous.ToString();
         }
     }
 }

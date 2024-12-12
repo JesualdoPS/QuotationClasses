@@ -22,17 +22,24 @@ namespace Calc.BusinessLogic
             _repository = repository;
         }
 
-        public double Add(double v1, double v2)
+        public async Task<double> Add(double v1, double v2)
         {
             return v1 + v2;
         }
-
-        public Length Add(Length v1, Length v2)
+        public async Task<double> Subtract(double v1, double v2)
         {
-            return v1 + v2;
+            return v1 - v2;
+        }
+        public async Task<double> Multiply(double v1, double v2)
+        {
+            return v1 * v2;
+        }
+        public async Task<double> Divide(double v1, double v2)
+        {
+            return v1 / v2;
         }
 
-        public MathLog Calculate(string input)
+        public async Task<MathLog> Calculate(string input)
         {
             var maxPosition = _repository.Memory.Count() - 1;
             var minPosition = 0;
@@ -47,13 +54,14 @@ namespace Calc.BusinessLogic
                     break;
 
                 default:
-                    var mathLog = EvaluateAndCalculate(input);
+                    var mathLog = EvaluateAndCalculate(input);                    
                     _repository.Memory.Add(mathLog);
                     Memory.Add(mathLog);
                     _repository.MemoryPosition = _repository.Memory.IndexOf(mathLog);
                     break;
             }
-            return _repository.Memory[_repository.MemoryPosition];
+            var result = _repository.Memory[_repository.MemoryPosition];
+            return await Task.FromResult(result);
         }
         private MathLog EvaluateAndCalculate(string input)
         {
@@ -97,20 +105,16 @@ namespace Calc.BusinessLogic
             return hasMatchedEverything;
         }
 
-        public Mass CalculateWeight(Volume materialVolume, Materials material)
+        public async Task<Mass> CalculateWeight(Volume materialVolume, Materials material)
         {
             var density = _densities[material];
             var mass = Mass.FromKilograms(density.Kilograms * materialVolume.CubicMeters);
             return mass;
         }
 
-        public Area Multiply(Length length1, Length length2)
+        public async Task<Volume> MultiplyVolume(Length length1, Length length2, Length lenght3)
         {
-            return length2 * length1;
-        }
-        public Volume Multiply(Length length1, Length length2, Length lenght3)
-        {
-            return length2 * length1 * lenght3;
+            return length1 * length2 * lenght3;
         }
     }
 }
