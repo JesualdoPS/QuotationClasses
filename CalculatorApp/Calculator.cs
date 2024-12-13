@@ -21,10 +21,10 @@ namespace CalculatorApp
         public async Task<MathLog> Calculate(string input)
         {
             var request = new CalculateRequest { Input = input };
-            var json = JsonConvert.SerializeObject(request.Input);
+            var json = JsonConvert.SerializeObject(request);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.PostAsync("/Calculator/Calculate", content);
+            var response = await _httpClient.PostAsync("Calculator/Calculate", content);
 
             if (response.IsSuccessStatusCode)
             {
