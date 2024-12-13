@@ -8,12 +8,14 @@ namespace CalculatorApp
 {
     public partial class CalculatorApp : Form
     {
+        private readonly HttpClient _httpClient;
         private readonly ICalculator _calculator;
 
         public CalculatorApp()
         {
             InitializeComponent();
-            _calculator = new Calculator();
+            _httpClient = new HttpClient();
+            _calculator = new Calculator(_httpClient);
         }
 
         private void screen_TextChanged(object sender, EventArgs e) { }

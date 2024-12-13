@@ -1,4 +1,6 @@
-﻿namespace Contracts
+﻿
+
+namespace Contracts
 {
     public class VolumeRequest
     {

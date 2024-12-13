@@ -16,7 +16,7 @@ namespace CalculatorWeb.Controllers
             _calculator = calculator;
         }
 
-        [HttpPost("Calculate")]
+        [HttpGet("Calculate")]
         public async Task<MathLogEntity> Calculate(CalculateRequest request)
         {
             var mathLog = await _calculator.Calculate(request.Input);
