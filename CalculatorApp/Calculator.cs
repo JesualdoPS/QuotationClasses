@@ -24,7 +24,7 @@ namespace CalculatorApp
             var json = JsonConvert.SerializeObject(request.Input);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.PostAsync("/Calculator/Calculate", content);
+            var response = await _httpClient.PostAsync("Calculator/Calculate", content);
 
             if (response.IsSuccessStatusCode)
             {
