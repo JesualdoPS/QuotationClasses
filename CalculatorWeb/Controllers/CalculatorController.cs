@@ -16,7 +16,7 @@ namespace CalculatorWeb.Controllers
             _calculator = calculator;
         }
 
-        [HttpGet("Calculate")]
+        [HttpPost("Calculate")]
         public async Task<MathLogEntity> Calculate(CalculateRequest request)
         {
             var mathLog = await _calculator.Calculate(request.Input);
@@ -48,7 +48,7 @@ namespace CalculatorWeb.Controllers
         [HttpPost("DivideNumbers")]
         public async Task<double> Divide(NormalRequest request)
         {
-            var result = await _calculator.Multiply(request.Value1, request.Value2);
+            var result = await _calculator.Divide(request.Value1, request.Value2);
             return result;
         }
 
