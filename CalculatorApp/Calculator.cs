@@ -682,5 +682,4 @@ namespace CalculatorApp
             Result = result;
         }
     }
-
 }
