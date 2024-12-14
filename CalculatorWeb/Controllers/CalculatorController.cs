@@ -48,7 +48,7 @@ namespace CalculatorWeb.Controllers
         [HttpPost("DivideNumbers")]
         public async Task<double> Divide(NormalRequest request)
         {
-            var result = await _calculator.Multiply(request.Value1, request.Value2);
+            var result = await _calculator.Divide(request.Value1, request.Value2);
             return result;
         }
 

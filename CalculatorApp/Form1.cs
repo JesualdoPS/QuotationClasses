@@ -2,18 +2,21 @@ using System.Text.RegularExpressions;
 using Azure.Core;
 using Contracts;
 using UnitsNet;
+using Calc.Persistance;
 
 
 namespace CalculatorApp
 {
     public partial class CalculatorApp : Form
     {
+        private readonly HttpClient _httpClient;
         private readonly ICalculator _calculator;
 
         public CalculatorApp()
         {
             InitializeComponent();
-            _calculator = new Calculator();
+            _httpClient = new HttpClient();
+            _calculator = new Calculator(_httpClient);
         }
 
         private void screen_TextChanged(object sender, EventArgs e) { }
@@ -151,7 +154,7 @@ namespace CalculatorApp
                     "+" => await _calculator.Add(value1, value2),
                     "-" => await _calculator.Subtract(value1, value2),
                     "*" => await _calculator.Multiply(value1, value2),
-                    "/" => await _calculator.Add(value1, value2)
+                    "/" => await _calculator.Divide(value1, value2)
                 };
                 screen.Text = result.ToString();
             }
@@ -171,6 +174,7 @@ namespace CalculatorApp
         private void saveSQL_Click(object sender, EventArgs e)
         {
             //string filePath = "";
+            //var _repository = new RepositorySQL();
             //_repository.SaveMemory(filePath);
             //screen.Text = "Data Saved on dbCalculator";
         }
@@ -179,7 +183,7 @@ namespace CalculatorApp
         {
             //string filePath =
             //    @"D:\Material de aula\Aula de Programação\curso_C#\Aulas\QuotationFactory\Storage\Calculator.xml";
-            //_repository = new RepositoryXml(_calculator.Memory);
+            //var _repository = new RepositoryXml(_calculator.Memory);
             //_repository.SaveMemory(filePath);
         }
 
@@ -187,7 +191,7 @@ namespace CalculatorApp
         {
             //string filePath =
             //    @"D:\Material de aula\Aula de Programação\curso_C#\Aulas\QuotationFactory\Storage\Calculator.json";
-            //_repository = new RepositoryJson(_calculator.Memory);
+            //var _repository = new RepositoryJson(_calculator.Memory);
             //_repository.SaveMemory(filePath);
         }
 
