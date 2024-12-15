@@ -10,7 +10,7 @@ namespace CalculatorApp
         static void Main()
         {
             var services = new ServiceCollection();
-            services.AddHttpClient("CalculatorApi", client =>
+            services.AddHttpClient("Calculator", client =>
             {
                 client.BaseAddress = new Uri("https://localhost:7299");
             })
@@ -20,7 +20,7 @@ namespace CalculatorApp
 
             var serviceProvider = services.BuildServiceProvider();
             var httpClientFactory = serviceProvider.GetService<IHttpClientFactory>();
-            var httpClient = httpClientFactory.CreateClient("CalculatorApi");
+            var httpClient = httpClientFactory.CreateClient("Calculator");
 
             ApplicationConfiguration.Initialize();
             Application.Run(new CalculatorApp(httpClient));

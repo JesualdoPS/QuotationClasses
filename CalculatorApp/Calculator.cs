@@ -115,7 +115,7 @@ namespace CalculatorApp
                             else
                             {
                                 var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                                throw new ApiException("Código de status inesperado.", (int)response_.StatusCode, responseData_, null, null);
+                                throw new ApiException("Unexpected status code.", (int)response_.StatusCode, responseData_, null, null);
                             }
                         }
                         finally
