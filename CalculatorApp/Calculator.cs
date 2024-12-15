@@ -72,53 +72,69 @@ namespace CalculatorApp
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
                     request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
-
                     var urlBuilder_ = new System.Text.StringBuilder();
                     if (!string.IsNullOrEmpty(_baseUrl))
                         urlBuilder_.Append(_baseUrl);
                     urlBuilder_.Append("Calculator/Calculate");
-
                     PrepareRequest(client_, request_, urlBuilder_);
                     var url_ = urlBuilder_.ToString();
                     request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
                     PrepareRequest(client_, request_, url_);
 
-                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseContentRead, cancellationToken).ConfigureAwait(false);
-                    var disposeResponse_ = true;
-
                     try
                     {
-                        if (response_.StatusCode == System.Net.HttpStatusCode.OK)
-                        {                                   // Do not use ReadObjectResponseAsync<MathLogEntity>
-                            var responseContent = await response_.Content.ReadAsStringAsync();
-                            try
+                        var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseContentRead, cancellationToken).ConfigureAwait(false);
+                        var disposeResponse_ = true;
+
+                        if (!response_.IsSuccessStatusCode)
+                            throw new HttpRequestException($"Request send error. Status Code: {response_.StatusCode}");
+
+                        try
+                        {
+                            if (response_.StatusCode == System.Net.HttpStatusCode.OK)
                             {
-                                var objectResponse_ = JsonConvert.DeserializeObject<MathLogEntity>(responseContent);
-                                if (objectResponse_ != null)
+                                var responseContent = await response_.Content.ReadAsStringAsync();
+                                try
                                 {
-                                    var result = objectResponse_.FromEntity();
-                                    return result;
+                                    var objectResponse_ = JsonConvert.DeserializeObject<MathLogEntity>(responseContent);
+                                    if (objectResponse_ != null)
+                                    {
+                                        var result = objectResponse_.FromEntity();
+                                        return result;
+                                    }
+                                    else
+                                    {
+                                        throw new ApiException("No answear.", 200, responseContent, null, null);
+                                    }
                                 }
-                                else
+                                catch (JsonSerializationException ex)
                                 {
-                                    throw new ApiException("Answear cannot be null.", 200, responseContent, null, null);
+                                    throw new ApiException("Deserializing error.", 200, responseContent, null, ex);
                                 }
                             }
-                            catch (JsonSerializationException ex)
+                            else
                             {
-                                throw new ApiException("Deserializing error.", 200, responseContent, null, ex);
+                                var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                                throw new ApiException("Código de status inesperado.", (int)response_.StatusCode, responseData_, null, null);
                             }
                         }
-                        else
+                        finally
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("Unexpected status code.", (int)response_.StatusCode, responseData_, null, null);
+                            if (disposeResponse_)
+                                response_.Dispose();
                         }
                     }
-                    finally
+                    catch (HttpRequestException ex)
                     {
-                        if (disposeResponse_)
-                            response_.Dispose();
+                        throw new ApiException("Request send error", 0, null, null, ex);
+                    }
+                    catch (TaskCanceledException ex)
+                    {
+                        throw new ApiException("Connection timeout", 0, null, null, ex);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new ApiException("Unknown error", 0, null, null, ex);
                     }
                 }
             }

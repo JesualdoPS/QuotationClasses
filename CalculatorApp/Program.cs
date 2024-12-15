@@ -14,15 +14,16 @@ namespace CalculatorApp
             {
                 client.BaseAddress = new Uri("https://localhost:7299");
             })
-            .AddPolicyHandler((IAsyncPolicy<HttpResponseMessage>)Policy.Handle<HttpRequestException>()
-                .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))));
+                .AddPolicyHandler(Policy.Handle<HttpRequestException>()
+                .OrResult<HttpResponseMessage>(r => !r.IsSuccessStatusCode)
+                .WaitAndRetryAsync(10, retryAttempt => TimeSpan.FromSeconds(3)));
 
             var serviceProvider = services.BuildServiceProvider();
             var httpClientFactory = serviceProvider.GetService<IHttpClientFactory>();
             var httpClient = httpClientFactory.CreateClient("CalculatorApi");
 
             ApplicationConfiguration.Initialize();
-            Application.Run(new Calculator(httpClient));
+            Application.Run(new CalculatorApp(httpClient));
         }
     }
 }

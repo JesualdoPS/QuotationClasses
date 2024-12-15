@@ -11,11 +11,12 @@ namespace CalculatorApp
     {
         private readonly HttpClient _httpClient;
         private readonly ICalculator _calculator;
+        public CalculatorApp() : this(new HttpClient()) { }
 
-        public CalculatorApp()
+        public CalculatorApp(HttpClient httpClient)
         {
+            _httpClient = httpClient;
             InitializeComponent();
-            _httpClient = new HttpClient();
             _calculator = new Calculator(_httpClient);
         }
 
