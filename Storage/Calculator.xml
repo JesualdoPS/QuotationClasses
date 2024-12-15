@@ -1,2 +1,23 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ArrayOfMathLogEntity xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+<ArrayOfMathLogEntity xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <MathLogEntity>
+    <Math>15 m + 5 m</Math>
+    <ResultValue>20</ResultValue>
+    <ResultUnit>Meter</ResultUnit>
+  </MathLogEntity>
+  <MathLogEntity>
+    <Math>10 m * 2 m</Math>
+    <ResultValue>20</ResultValue>
+    <ResultUnit>SquareMeter</ResultUnit>
+  </MathLogEntity>
+  <MathLogEntity>
+    <Math>5 mm - 3 mm</Math>
+    <ResultValue>2</ResultValue>
+    <ResultUnit>Millimeter</ResultUnit>
+  </MathLogEntity>
+  <MathLogEntity>
+    <Math>3 mm * 3 mm</Math>
+    <ResultValue>9</ResultValue>
+    <ResultUnit>SquareMillimeter</ResultUnit>
+  </MathLogEntity>
+</ArrayOfMathLogEntity>
