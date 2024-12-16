@@ -20,83 +20,154 @@ namespace CalculatorApp
 
         public async Task<MathLog> Calculate(string input)
         {
-            var request = new CalculateRequest { Input = input };
-            var json = JsonConvert.SerializeObject(request.Input);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            int maxTries = 10;
+            int tryNumber = 0;
 
-            var response = await _httpClient.PostAsync("/Calculator/Calculate", content);
+            while (tryNumber <= maxTries)
+            {
+                try
+                {
+                    var request = new CalculateRequest { Input = input };
+                    var json = JsonConvert.SerializeObject(request.Input);
+                    var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            if (response.IsSuccessStatusCode)
-            {
-                var jsonResult = await response.Content.ReadAsStringAsync();
-                var mathLog = JsonConvert.DeserializeObject<MathLogEntity>(jsonResult);
-                var result = mathLog.FromEntity();
-                return result;
+                    var response = await _httpClient.PostAsync("/Calculator/Calculate", content);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var jsonResult = await response.Content.ReadAsStringAsync();
+                        var mathLog = JsonConvert.DeserializeObject<MathLogEntity>(jsonResult);
+                        var result = mathLog.FromEntity();
+                        return result;
+                    }
+                    else
+                    {
+                        throw new Exception($"Calulation error: {response.StatusCode}");
+                    }
+                }
+                catch (HttpRequestException ex)
+                {
+                    tryNumber++;
+                    await Task.Delay(TimeSpan.FromSeconds(3));
+                }
             }
-            else
-            {
-                throw new Exception();
-            }
+            throw new HttpRequestException("Number of tries was reached");
         }
 
         public async Task<double> Add(double v1, double v2)
         {
-            var request = new NormalRequest { Value1 = v1, Value2 = v2 };
-            var json = JsonConvert.SerializeObject(request);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            int maxTries = 3;
+            int tryNumber = 0;
+            while (tryNumber < maxTries)
+            {
+                try
+                {
+                    var request = new NormalRequest { Value1 = v1, Value2 = v2 };
+                    var json = JsonConvert.SerializeObject(request);
+                    var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.PostAsync("/Calculator/AddNumbers", content);
-            response.EnsureSuccessStatusCode();
+                    var response = await _httpClient.PostAsync("/Calculator/AddNumbers", content);
+                    response.EnsureSuccessStatusCode();
 
-            var responseBody = await response.Content.ReadAsStringAsync();
-            var result = JsonConvert.DeserializeObject<double>(responseBody);
+                    var responseBody = await response.Content.ReadAsStringAsync();
+                    var result = JsonConvert.DeserializeObject<double>(responseBody);
 
-            return result;
+                    return result;
+                }
+                catch (HttpRequestException ex)
+                {
+                    tryNumber++;
+                    await Task.Delay(TimeSpan.FromSeconds(3));
+                }
+            }
+            throw new Exception("Number of tries was reached");
         }
 
         public async Task<double> Subtract(double v1, double v2)
         {
-            var request = new NormalRequest { Value1 = v1, Value2 = v2 };
-            var json = JsonConvert.SerializeObject(request);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            int maxTries = 3;
+            int tryNumber = 0;
+            while (tryNumber < maxTries)
+            {
+                try
+                {
+                    var request = new NormalRequest { Value1 = v1, Value2 = v2 };
+                    var json = JsonConvert.SerializeObject(request);
+                    var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.PostAsync("Calculator/SubtractNumbers", content);
-            response.EnsureSuccessStatusCode();
+                    var response = await _httpClient.PostAsync("Calculator/SubtractNumbers", content);
+                    response.EnsureSuccessStatusCode();
 
-            var responseBody = await response.Content.ReadAsStringAsync();
-            var result = JsonConvert.DeserializeObject<double>(responseBody);
+                    var responseBody = await response.Content.ReadAsStringAsync();
+                    var result = JsonConvert.DeserializeObject<double>(responseBody);
 
-            return result;
+                    return result;
+                }
+                catch (HttpRequestException ex)
+                {
+                    tryNumber++;
+                    await Task.Delay(TimeSpan.FromSeconds(3));
+                }
+            }
+            throw new Exception("Number of tries was reached");
         }
 
         public async Task<double> Multiply(double v1, double v2)
         {
-            var request = new NormalRequest { Value1 = v1, Value2 = v2 };
-            var json = JsonConvert.SerializeObject(request);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            int maxTries = 3;
+            int tryNumber = 0;
+            while (tryNumber < maxTries)
+            {
+                try
+                {
+                    var request = new NormalRequest { Value1 = v1, Value2 = v2 };
+                    var json = JsonConvert.SerializeObject(request);
+                    var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.PostAsync("Calculator/MultiplyNumbers", content);
-            response.EnsureSuccessStatusCode();
+                    var response = await _httpClient.PostAsync("Calculator/MultiplyNumbers", content);
+                    response.EnsureSuccessStatusCode();
 
-            var responseBody = await response.Content.ReadAsStringAsync();
-            var result = JsonConvert.DeserializeObject<double>(responseBody);
+                    var responseBody = await response.Content.ReadAsStringAsync();
+                    var result = JsonConvert.DeserializeObject<double>(responseBody);
 
-            return result;
+                    return result;
+                }
+                catch (HttpRequestException ex)
+                {
+                    tryNumber++;
+                    await Task.Delay(TimeSpan.FromSeconds(3));
+                }
+            }
+            throw new Exception("Number of tries was reached");
         }
 
         public async Task<double> Divide(double v1, double v2)
         {
-            var request = new NormalRequest { Value1 = v1, Value2 = v2 };
-            var json = JsonConvert.SerializeObject(request);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            int maxTries = 3;
+            int tryNumber = 0;
+            while (tryNumber < maxTries)
+            {
+                try
+                {
+                    var request = new NormalRequest { Value1 = v1, Value2 = v2 };
+                    var json = JsonConvert.SerializeObject(request);
+                    var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.PostAsync("Calculator/DivideNumbers", content);
-            response.EnsureSuccessStatusCode();
+                    var response = await _httpClient.PostAsync("Calculator/DivideNumbers", content);
+                    response.EnsureSuccessStatusCode();
 
-            var responseBody = await response.Content.ReadAsStringAsync();
-            var result = JsonConvert.DeserializeObject<double>(responseBody);
+                    var responseBody = await response.Content.ReadAsStringAsync();
+                    var result = JsonConvert.DeserializeObject<double>(responseBody);
 
-            return result;
+                    return result;
+                }
+                catch (HttpRequestException ex)
+                {
+                    tryNumber++;
+                    await Task.Delay(TimeSpan.FromSeconds(3));
+                }
+            }
+            throw new Exception("Number of tries was reached");
         }
 
         public async Task<Mass> CalculateWeight(Volume materialVolume, Materials material)
@@ -106,24 +177,38 @@ namespace CalculatorApp
 
         public async Task<Volume> MultiplyVolume(Length length1, Length length2, Length lenght3)
         {
-            var request = new VolumeRequest()
+            int maxTries = 3;
+            int tryNumber = 0;
+            while (tryNumber < maxTries)
             {
-                Length1 = length1.ToSerializable(),
-                Length2 = length2.ToSerializable(),
-                Length3 = lenght3.ToSerializable()
-            };
+                try
+                {
+                    var request = new VolumeRequest()
+                    {
+                        Length1 = length1.ToSerializable(),
+                        Length2 = length2.ToSerializable(),
+                        Length3 = lenght3.ToSerializable()
+                    };
 
-            var json = JsonConvert.SerializeObject(request);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
+                    var json = JsonConvert.SerializeObject(request);
+                    var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.PostAsync("Calculator/MultiplyVolume", content);
-            response.EnsureSuccessStatusCode();
+                    var response = await _httpClient.PostAsync("Calculator/MultiplyVolume", content);
+                    response.EnsureSuccessStatusCode();
 
-            var responseBody = await response.Content.ReadAsStringAsync();
-            var unitsValue = JsonConvert.DeserializeObject<SerializableUnitsValue>(responseBody);
-            var result = (Volume)unitsValue.ToIQuantity();
+                    var responseBody = await response.Content.ReadAsStringAsync();
+                    var unitsValue = JsonConvert.DeserializeObject<SerializableUnitsValue>(responseBody);
+                    var result = (Volume)unitsValue.ToIQuantity();
 
-            return result;
+                    return result;
+                }
+                catch (HttpRequestException ex)
+                {
+                    tryNumber++;
+                    await Task.Delay(TimeSpan.FromSeconds(3));
+                }
+            }
+            throw new Exception("Number of tries was reached");
         }
     }
 }
