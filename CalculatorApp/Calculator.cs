@@ -53,7 +53,7 @@ namespace CalculatorApp
             var request = new CalculateRequest { Input = input };
             return CalculateAsync(request, System.Threading.CancellationToken.None);
         }
-                
+
         public virtual async System.Threading.Tasks.Task<MathLog> CalculateAsync(CalculateRequest request, System.Threading.CancellationToken cancellationToken)
         {
             if (request == null)
@@ -81,60 +81,45 @@ namespace CalculatorApp
                     request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
                     PrepareRequest(client_, request_, url_);
 
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseContentRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+
+                    if (!response_.IsSuccessStatusCode)
+                        throw new HttpRequestException($"Request send error. Status Code: {response_.StatusCode}");
+
                     try
                     {
-                        var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseContentRead, cancellationToken).ConfigureAwait(false);
-                        var disposeResponse_ = true;
-
-                        if (!response_.IsSuccessStatusCode)
-                            throw new HttpRequestException($"Request send error. Status Code: {response_.StatusCode}");
-
-                        try
+                        if (response_.StatusCode == System.Net.HttpStatusCode.OK)
                         {
-                            if (response_.StatusCode == System.Net.HttpStatusCode.OK)
+                            var responseContent = await response_.Content.ReadAsStringAsync();
+                            try
                             {
-                                var responseContent = await response_.Content.ReadAsStringAsync();
-                                try
+                                var objectResponse_ = JsonConvert.DeserializeObject<MathLogEntity>(responseContent);
+                                if (objectResponse_ != null)
                                 {
-                                    var objectResponse_ = JsonConvert.DeserializeObject<MathLogEntity>(responseContent);
-                                    if (objectResponse_ != null)
-                                    {
-                                        var result = objectResponse_.FromEntity();
-                                        return result;
-                                    }
-                                    else
-                                    {
-                                        throw new ApiException("No answear.", 200, responseContent, null, null);
-                                    }
+                                    var result = objectResponse_.FromEntity();
+                                    return result;
                                 }
-                                catch (JsonSerializationException ex)
+                                else
                                 {
-                                    throw new ApiException("Deserializing error.", 200, responseContent, null, ex);
+                                    throw new ApiException("No answear.", 200, responseContent, null, null);
                                 }
                             }
-                            else
+                            catch (JsonSerializationException ex)
                             {
-                                var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                                throw new ApiException("Unexpected status code.", (int)response_.StatusCode, responseData_, null, null);
+                                throw new ApiException("Deserializing error.", 200, responseContent, null, ex);
                             }
                         }
-                        finally
+                        else
                         {
-                            if (disposeResponse_)
-                                response_.Dispose();
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("Unexpected status code.", (int)response_.StatusCode, responseData_, null, null);
                         }
                     }
-                    catch (HttpRequestException ex)
+                    finally
                     {
-                        throw new ApiException("Request send error", 0, null, null, ex);
-                    }
-                    catch (TaskCanceledException ex)
-                    {
-                        throw new ApiException("Connection timeout", 0, null, null, ex);
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new ApiException("Unknown error", 0, null, null, ex);
+                        if (disposeResponse_)
+                            response_.Dispose();
                     }
                 }
             }
@@ -231,8 +216,7 @@ namespace CalculatorApp
                 catch (HttpRequestException ex)
                 {
                     retryCount++;
-                    Console.WriteLine($"Erro de conexão. Tentativa {retryCount} de {maxRetries}.");
-                    await Task.Delay(1000);
+                    Console.WriteLine($"Erro de conexão. Try number {retryCount} of {maxRetries}.");
                     throw new ApiException("Erro de conexão", 500, null, null, ex);
                 }
             }
@@ -330,7 +314,6 @@ namespace CalculatorApp
                 {
                     retryCount++;
                     Console.WriteLine($"Connection Error. Try number {retryCount} of {maxRetries}.");
-                    await Task.Delay(1000);
                     throw new ApiException("Connection Error", 500, null, null, ex);
                 }
             }
@@ -428,7 +411,6 @@ namespace CalculatorApp
                 {
                     retryCount++;
                     Console.WriteLine($"Connection Error. Try number {retryCount} of {maxRetries}.");
-                    await Task.Delay(1000);
                     throw new ApiException("Connection Error", 500, null, null, ex);
                 }
             }
@@ -526,7 +508,6 @@ namespace CalculatorApp
                 {
                     retryCount++;
                     Console.WriteLine($"Connection Error. Try number {retryCount} of {maxRetries}.");
-                    await Task.Delay(1000);
                     throw new ApiException("Connection Error", 500, null, null, ex);
                 }
             }
@@ -594,7 +575,7 @@ namespace CalculatorApp
                                     var objectResponse_ = JsonConvert.DeserializeObject<SerializableUnitsValue>(responseContent);
                                     if (objectResponse_ != null)
                                     {
-                                        return Volume.FromCubicMeters((double)objectResponse_.Value);                                        
+                                        return Volume.FromCubicMeters((double)objectResponse_.Value);
                                     }
                                     else
                                     {
@@ -752,7 +733,7 @@ namespace CalculatorApp
             throw new NotImplementedException();
         }
     }
-    
+
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "14.2.0.0 (NJsonSchema v11.1.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class ApiException : System.Exception
     {
