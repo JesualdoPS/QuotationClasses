@@ -150,79 +150,97 @@ namespace CalculatorApp
             var request = new NormalRequest { Value1 = v1, Value2 = v2 };
             return AddAsync(request, System.Threading.CancellationToken.None);
         }
-               
+
         public virtual async System.Threading.Tasks.Task<double> AddAsync(NormalRequest request, System.Threading.CancellationToken cancellationToken)
         {
             if (request == null)
                 throw new System.ArgumentNullException("request");
 
-            var client_ = _httpClient;
-            var disposeClient_ = false;
-            try
+            int retryCount = 0;
+            const int maxRetries = 1;
+            bool sucesso = false;
+            double result = 0;
+
+            while (!sucesso && retryCount < maxRetries)
             {
-                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                try
                 {
-                    var json_ = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(request, JsonSerializerSettings);
-                    var content_ = new System.Net.Http.ByteArrayContent(json_);
-                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
-                    request_.Content = content_;
-                    request_.Method = new System.Net.Http.HttpMethod("POST");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+                    var client_ = _httpClient;
+                    var disposeClient_ = false;
 
-                    var urlBuilder_ = new System.Text.StringBuilder();
-                    if (!string.IsNullOrEmpty(_baseUrl)) urlBuilder_.Append(_baseUrl);
-                    urlBuilder_.Append("Calculator/AddNumbers");
-
-                    PrepareRequest(client_, request_, urlBuilder_);
-
-                    var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
-
-                    PrepareRequest(client_, request_, url_);
-
-                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    var disposeResponse_ = true;
-                    try
+                    using (var request_ = new System.Net.Http.HttpRequestMessage())
                     {
-                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
-                        foreach (var item_ in response_.Headers)
-                            headers_[item_.Key] = item_.Value;
-                        if (response_.Content != null && response_.Content.Headers != null)
+                        var json_ = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(request, JsonSerializerSettings);
+                        var content_ = new System.Net.Http.ByteArrayContent(json_);
+                        content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+                        request_.Content = content_;
+                        request_.Method = new System.Net.Http.HttpMethod("POST");
+                        request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+
+                        var urlBuilder_ = new System.Text.StringBuilder();
+                        if (!string.IsNullOrEmpty(_baseUrl))
+                            urlBuilder_.Append(_baseUrl);
+                        urlBuilder_.Append("Calculator/AddNumbers");
+                        PrepareRequest(client_, request_, urlBuilder_);
+                        var url_ = urlBuilder_.ToString();
+                        request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+                        PrepareRequest(client_, request_, url_);
+
+                        Console.WriteLine($"Try number {retryCount + 1} of {maxRetries}");
+                        await Task.Delay(100);
+
+                        var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                        var disposeResponse_ = true;
+
+                        try
                         {
-                            foreach (var item_ in response_.Content.Headers)
+                            var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                            foreach (var item_ in response_.Headers)
                                 headers_[item_.Key] = item_.Value;
-                        }
-
-                        ProcessResponse(client_, response_);
-
-                        var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<double>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
+                            if (response_.Content != null && response_.Content.Headers != null)
                             {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                                foreach (var item_ in response_.Content.Headers)
+                                    headers_[item_.Key] = item_.Value;
                             }
-                            return objectResponse_.Object;
+                            ProcessResponse(client_, response_);
+                            var status_ = (int)response_.StatusCode;
+
+                            if (status_ == 200)
+                            {
+                                var objectResponse_ = await ReadObjectResponseAsync<double>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                                if (objectResponse_.Object == null)
+                                {
+                                    throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                                }
+                                result = objectResponse_.Object;
+                                sucesso = true;
+                            }
+                            else
+                            {
+                                var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                                throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            }
                         }
-                        else
+                        finally
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            if (disposeResponse_)
+                                response_.Dispose();
                         }
-                    }
-                    finally
-                    {
-                        if (disposeResponse_)
-                            response_.Dispose();
                     }
                 }
+                catch (HttpRequestException ex)
+                {
+                    retryCount++;
+                    Console.WriteLine($"Erro de conexão. Tentativa {retryCount} de {maxRetries}.");
+                    await Task.Delay(1000);
+                    throw new ApiException("Erro de conexão", 500, null, null, ex);
+                }
             }
-            finally
+            if (!sucesso)
             {
-                if (disposeClient_)
-                    client_.Dispose();
+                throw new ApiException("Falha após " + maxRetries + " tentativas.", 500, null, null, null);
             }
+            return result;
         }
 
         public virtual System.Threading.Tasks.Task<double> Subtract(double v1, double v2)
@@ -230,79 +248,97 @@ namespace CalculatorApp
             var request = new NormalRequest { Value1 = v1, Value2 = v2 };
             return SubtractAsync(request, System.Threading.CancellationToken.None);
         }
-                
+
         public virtual async System.Threading.Tasks.Task<double> SubtractAsync(NormalRequest request, System.Threading.CancellationToken cancellationToken)
         {
             if (request == null)
                 throw new System.ArgumentNullException("request");
 
-            var client_ = _httpClient;
-            var disposeClient_ = false;
-            try
+            int retryCount = 0;
+            const int maxRetries = 1;
+            bool sucesso = false;
+            double result = 0;
+
+            while (!sucesso && retryCount < maxRetries)
             {
-                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                try
                 {
-                    var json_ = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(request, JsonSerializerSettings);
-                    var content_ = new System.Net.Http.ByteArrayContent(json_);
-                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
-                    request_.Content = content_;
-                    request_.Method = new System.Net.Http.HttpMethod("POST");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+                    var client_ = _httpClient;
+                    var disposeClient_ = false;
 
-                    var urlBuilder_ = new System.Text.StringBuilder();
-                    if (!string.IsNullOrEmpty(_baseUrl)) urlBuilder_.Append(_baseUrl);
-                    urlBuilder_.Append("Calculator/SubtractNumbers");
-
-                    PrepareRequest(client_, request_, urlBuilder_);
-
-                    var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
-
-                    PrepareRequest(client_, request_, url_);
-
-                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    var disposeResponse_ = true;
-                    try
+                    using (var request_ = new System.Net.Http.HttpRequestMessage())
                     {
-                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
-                        foreach (var item_ in response_.Headers)
-                            headers_[item_.Key] = item_.Value;
-                        if (response_.Content != null && response_.Content.Headers != null)
+                        var json_ = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(request, JsonSerializerSettings);
+                        var content_ = new System.Net.Http.ByteArrayContent(json_);
+                        content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+                        request_.Content = content_;
+                        request_.Method = new System.Net.Http.HttpMethod("POST");
+                        request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+
+                        var urlBuilder_ = new System.Text.StringBuilder();
+                        if (!string.IsNullOrEmpty(_baseUrl))
+                            urlBuilder_.Append(_baseUrl);
+                        urlBuilder_.Append("Calculator/SubtractNumbers");
+                        PrepareRequest(client_, request_, urlBuilder_);
+                        var url_ = urlBuilder_.ToString();
+                        request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+                        PrepareRequest(client_, request_, url_);
+
+                        Console.WriteLine($"Try number {retryCount + 1} of {maxRetries}");
+                        await Task.Delay(100);
+
+                        var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                        var disposeResponse_ = true;
+
+                        try
                         {
-                            foreach (var item_ in response_.Content.Headers)
+                            var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                            foreach (var item_ in response_.Headers)
                                 headers_[item_.Key] = item_.Value;
-                        }
-
-                        ProcessResponse(client_, response_);
-
-                        var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<double>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
+                            if (response_.Content != null && response_.Content.Headers != null)
                             {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                                foreach (var item_ in response_.Content.Headers)
+                                    headers_[item_.Key] = item_.Value;
                             }
-                            return objectResponse_.Object;
+                            ProcessResponse(client_, response_);
+                            var status_ = (int)response_.StatusCode;
+
+                            if (status_ == 200)
+                            {
+                                var objectResponse_ = await ReadObjectResponseAsync<double>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                                if (objectResponse_.Object == null)
+                                {
+                                    throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                                }
+                                result = objectResponse_.Object;
+                                sucesso = true;
+                            }
+                            else
+                            {
+                                var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                                throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            }
                         }
-                        else
+                        finally
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            if (disposeResponse_)
+                                response_.Dispose();
                         }
-                    }
-                    finally
-                    {
-                        if (disposeResponse_)
-                            response_.Dispose();
                     }
                 }
+                catch (HttpRequestException ex)
+                {
+                    retryCount++;
+                    Console.WriteLine($"Connection Error. Try number {retryCount} of {maxRetries}.");
+                    await Task.Delay(1000);
+                    throw new ApiException("Connection Error", 500, null, null, ex);
+                }
             }
-            finally
+            if (!sucesso)
             {
-                if (disposeClient_)
-                    client_.Dispose();
+                throw new ApiException("Failed after " + maxRetries + " tries.", 500, null, null, null);
             }
+            return result;
         }
 
         public virtual System.Threading.Tasks.Task<double> Multiply(double v1, double v2)
@@ -310,79 +346,97 @@ namespace CalculatorApp
             var request = new NormalRequest { Value1 = v1, Value2 = v2 };
             return MultiplyAsync(request, System.Threading.CancellationToken.None);
         }
-                
+
         public virtual async System.Threading.Tasks.Task<double> MultiplyAsync(NormalRequest request, System.Threading.CancellationToken cancellationToken)
         {
             if (request == null)
                 throw new System.ArgumentNullException("request");
 
-            var client_ = _httpClient;
-            var disposeClient_ = false;
-            try
+            int retryCount = 0;
+            const int maxRetries = 1;
+            bool sucesso = false;
+            double result = 0;
+
+            while (!sucesso && retryCount < maxRetries)
             {
-                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                try
                 {
-                    var json_ = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(request, JsonSerializerSettings);
-                    var content_ = new System.Net.Http.ByteArrayContent(json_);
-                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
-                    request_.Content = content_;
-                    request_.Method = new System.Net.Http.HttpMethod("POST");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+                    var client_ = _httpClient;
+                    var disposeClient_ = false;
 
-                    var urlBuilder_ = new System.Text.StringBuilder();
-                    if (!string.IsNullOrEmpty(_baseUrl)) urlBuilder_.Append(_baseUrl);
-                    urlBuilder_.Append("Calculator/MultiplyNumbers");
-
-                    PrepareRequest(client_, request_, urlBuilder_);
-
-                    var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
-
-                    PrepareRequest(client_, request_, url_);
-
-                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    var disposeResponse_ = true;
-                    try
+                    using (var request_ = new System.Net.Http.HttpRequestMessage())
                     {
-                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
-                        foreach (var item_ in response_.Headers)
-                            headers_[item_.Key] = item_.Value;
-                        if (response_.Content != null && response_.Content.Headers != null)
+                        var json_ = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(request, JsonSerializerSettings);
+                        var content_ = new System.Net.Http.ByteArrayContent(json_);
+                        content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+                        request_.Content = content_;
+                        request_.Method = new System.Net.Http.HttpMethod("POST");
+                        request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+
+                        var urlBuilder_ = new System.Text.StringBuilder();
+                        if (!string.IsNullOrEmpty(_baseUrl))
+                            urlBuilder_.Append(_baseUrl);
+                        urlBuilder_.Append("Calculator/MultiplyNumbers");
+                        PrepareRequest(client_, request_, urlBuilder_);
+                        var url_ = urlBuilder_.ToString();
+                        request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+                        PrepareRequest(client_, request_, url_);
+
+                        Console.WriteLine($"Try number {retryCount + 1} of {maxRetries}");
+                        await Task.Delay(100);
+
+                        var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                        var disposeResponse_ = true;
+
+                        try
                         {
-                            foreach (var item_ in response_.Content.Headers)
+                            var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                            foreach (var item_ in response_.Headers)
                                 headers_[item_.Key] = item_.Value;
-                        }
-
-                        ProcessResponse(client_, response_);
-
-                        var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<double>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
+                            if (response_.Content != null && response_.Content.Headers != null)
                             {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                                foreach (var item_ in response_.Content.Headers)
+                                    headers_[item_.Key] = item_.Value;
                             }
-                            return objectResponse_.Object;
+                            ProcessResponse(client_, response_);
+                            var status_ = (int)response_.StatusCode;
+
+                            if (status_ == 200)
+                            {
+                                var objectResponse_ = await ReadObjectResponseAsync<double>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                                if (objectResponse_.Object == null)
+                                {
+                                    throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                                }
+                                result = objectResponse_.Object;
+                                sucesso = true;
+                            }
+                            else
+                            {
+                                var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                                throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            }
                         }
-                        else
+                        finally
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            if (disposeResponse_)
+                                response_.Dispose();
                         }
-                    }
-                    finally
-                    {
-                        if (disposeResponse_)
-                            response_.Dispose();
                     }
                 }
+                catch (HttpRequestException ex)
+                {
+                    retryCount++;
+                    Console.WriteLine($"Connection Error. Try number {retryCount} of {maxRetries}.");
+                    await Task.Delay(1000);
+                    throw new ApiException("Connection Error", 500, null, null, ex);
+                }
             }
-            finally
+            if (!sucesso)
             {
-                if (disposeClient_)
-                    client_.Dispose();
+                throw new ApiException("Failed after " + maxRetries + " tries.", 500, null, null, null);
             }
+            return result;
         }
 
         public virtual System.Threading.Tasks.Task<double> Divide(double v1, double v2)
@@ -390,79 +444,97 @@ namespace CalculatorApp
             var request = new NormalRequest { Value1 = v1, Value2 = v2 };
             return DivideAsync(request, System.Threading.CancellationToken.None);
         }
-                
+
         public virtual async System.Threading.Tasks.Task<double> DivideAsync(NormalRequest request, System.Threading.CancellationToken cancellationToken)
         {
             if (request == null)
                 throw new System.ArgumentNullException("request");
 
-            var client_ = _httpClient;
-            var disposeClient_ = false;
-            try
+            int retryCount = 0;
+            const int maxRetries = 1;
+            bool sucesso = false;
+            double result = 0;
+
+            while (!sucesso && retryCount < maxRetries)
             {
-                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                try
                 {
-                    var json_ = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(request, JsonSerializerSettings);
-                    var content_ = new System.Net.Http.ByteArrayContent(json_);
-                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
-                    request_.Content = content_;
-                    request_.Method = new System.Net.Http.HttpMethod("POST");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+                    var client_ = _httpClient;
+                    var disposeClient_ = false;
 
-                    var urlBuilder_ = new System.Text.StringBuilder();
-                    if (!string.IsNullOrEmpty(_baseUrl)) urlBuilder_.Append(_baseUrl);
-                    urlBuilder_.Append("Calculator/DivideNumbers");
-
-                    PrepareRequest(client_, request_, urlBuilder_);
-
-                    var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
-
-                    PrepareRequest(client_, request_, url_);
-
-                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    var disposeResponse_ = true;
-                    try
+                    using (var request_ = new System.Net.Http.HttpRequestMessage())
                     {
-                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
-                        foreach (var item_ in response_.Headers)
-                            headers_[item_.Key] = item_.Value;
-                        if (response_.Content != null && response_.Content.Headers != null)
+                        var json_ = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(request, JsonSerializerSettings);
+                        var content_ = new System.Net.Http.ByteArrayContent(json_);
+                        content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+                        request_.Content = content_;
+                        request_.Method = new System.Net.Http.HttpMethod("POST");
+                        request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+
+                        var urlBuilder_ = new System.Text.StringBuilder();
+                        if (!string.IsNullOrEmpty(_baseUrl))
+                            urlBuilder_.Append(_baseUrl);
+                        urlBuilder_.Append("Calculator/DivideNumbers");
+                        PrepareRequest(client_, request_, urlBuilder_);
+                        var url_ = urlBuilder_.ToString();
+                        request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+                        PrepareRequest(client_, request_, url_);
+
+                        Console.WriteLine($"Try number {retryCount + 1} of {maxRetries}");
+                        await Task.Delay(100);
+
+                        var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                        var disposeResponse_ = true;
+
+                        try
                         {
-                            foreach (var item_ in response_.Content.Headers)
+                            var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                            foreach (var item_ in response_.Headers)
                                 headers_[item_.Key] = item_.Value;
-                        }
-
-                        ProcessResponse(client_, response_);
-
-                        var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<double>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
+                            if (response_.Content != null && response_.Content.Headers != null)
                             {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                                foreach (var item_ in response_.Content.Headers)
+                                    headers_[item_.Key] = item_.Value;
                             }
-                            return objectResponse_.Object;
+                            ProcessResponse(client_, response_);
+                            var status_ = (int)response_.StatusCode;
+
+                            if (status_ == 200)
+                            {
+                                var objectResponse_ = await ReadObjectResponseAsync<double>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                                if (objectResponse_.Object == null)
+                                {
+                                    throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                                }
+                                result = objectResponse_.Object;
+                                sucesso = true;
+                            }
+                            else
+                            {
+                                var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                                throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            }
                         }
-                        else
+                        finally
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            if (disposeResponse_)
+                                response_.Dispose();
                         }
-                    }
-                    finally
-                    {
-                        if (disposeResponse_)
-                            response_.Dispose();
                     }
                 }
+                catch (HttpRequestException ex)
+                {
+                    retryCount++;
+                    Console.WriteLine($"Connection Error. Try number {retryCount} of {maxRetries}.");
+                    await Task.Delay(1000);
+                    throw new ApiException("Connection Error", 500, null, null, ex);
+                }
             }
-            finally
+            if (!sucesso)
             {
-                if (disposeClient_)
-                    client_.Dispose();
+                throw new ApiException("Failed after " + maxRetries + " tries.", 500, null, null, null);
             }
+            return result;
         }
 
         public virtual async Task<Volume> MultiplyVolume(Length length1, Length length2, Length lenght3)
@@ -476,7 +548,7 @@ namespace CalculatorApp
             var response = await MultiplyVolumeAsync(request, System.Threading.CancellationToken.None);
             return response;
         }
-               
+
         public virtual async System.Threading.Tasks.Task<Volume> MultiplyVolumeAsync(VolumeRequest request, System.Threading.CancellationToken cancellationToken)
         {
             if (request == null)
@@ -495,51 +567,68 @@ namespace CalculatorApp
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
                     request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
-
                     var urlBuilder_ = new System.Text.StringBuilder();
                     if (!string.IsNullOrEmpty(_baseUrl))
                         urlBuilder_.Append(_baseUrl);
                     urlBuilder_.Append("Calculator/MultiplyVolume");
-
                     PrepareRequest(client_, request_, urlBuilder_);
                     var url_ = urlBuilder_.ToString();
                     request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
                     PrepareRequest(client_, request_, url_);
 
-                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseContentRead, cancellationToken).ConfigureAwait(false);
-                    var disposeResponse_ = true;
-
                     try
                     {
-                        if (response_.StatusCode == System.Net.HttpStatusCode.OK)
+                        var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseContentRead, cancellationToken).ConfigureAwait(false);
+                        var disposeResponse_ = true;
+
+                        if (!response_.IsSuccessStatusCode)
+                            throw new HttpRequestException($"Request send error. Status Code: {response_.StatusCode}");
+
+                        try
                         {
-                            var responseContent = await response_.Content.ReadAsStringAsync();
-                            try
+                            if (response_.StatusCode == System.Net.HttpStatusCode.OK)
                             {
-                                var objectResponse_ = JsonConvert.DeserializeObject<SerializableUnitsValue>(responseContent);
-                                if (objectResponse_ != null)
+                                var responseContent = await response_.Content.ReadAsStringAsync();
+                                try
                                 {
-                                    return Volume.FromCubicMeters((double)objectResponse_.Value);
+                                    var objectResponse_ = JsonConvert.DeserializeObject<SerializableUnitsValue>(responseContent);
+                                    if (objectResponse_ != null)
+                                    {
+                                        return Volume.FromCubicMeters((double)objectResponse_.Value);                                        
+                                    }
+                                    else
+                                    {
+                                        throw new ApiException("No answear.", 200, responseContent, null, null);
+                                    }
                                 }
-                                else
+                                catch (JsonSerializationException ex)
                                 {
-                                    throw new ApiException("Answear cannot be null.", 200, responseContent, null, null);
+                                    throw new ApiException("Deserializing error.", 200, responseContent, null, ex);
                                 }
                             }
-                            catch (JsonSerializationException ex)
+                            else
                             {
-                                throw new ApiException("Deserializing error.", 200, responseContent, null, ex);
+                                var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                                throw new ApiException("Unexpected status code.", (int)response_.StatusCode, responseData_, null, null);
                             }
                         }
-                        else
+                        finally
                         {
-                            throw new ApiException("Unexpected status code.", (int)response_.StatusCode, null, null, null);
+                            if (disposeResponse_)
+                                response_.Dispose();
                         }
                     }
-                    finally
+                    catch (HttpRequestException ex)
                     {
-                        if (disposeResponse_)
-                            response_.Dispose();
+                        throw new ApiException("Request send error", 0, null, null, ex);
+                    }
+                    catch (TaskCanceledException ex)
+                    {
+                        throw new ApiException("Connection timeout", 0, null, null, ex);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new ApiException("Unknown error", 0, null, null, ex);
                     }
                 }
             }
