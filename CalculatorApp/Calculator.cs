@@ -20,18 +20,18 @@ namespace CalculatorApp
 
         public async Task<MathLog> Calculate(string input)
         {
-            int maxTries = 10;
-            int tryNumber = 0;
+            int maxTries = 3;
+            int tryNumber = 1;
 
             while (tryNumber <= maxTries)
             {
                 try
                 {
                     var request = new CalculateRequest { Input = input };
-                    var json = JsonConvert.SerializeObject(request.Input);
+                    var json = JsonConvert.SerializeObject(request);
                     var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                    var response = await _httpClient.PostAsync("/Calculator/Calculate", content);
+                    var response = await _httpClient.PostAsync("Calculator/Calculate", content);
 
                     if (response.IsSuccessStatusCode)
                     {
@@ -45,7 +45,7 @@ namespace CalculatorApp
                         throw new Exception($"Calulation error: {response.StatusCode}");
                     }
                 }
-                catch (HttpRequestException ex)
+                catch (HttpRequestException)
                 {
                     tryNumber++;
                     await Task.Delay(TimeSpan.FromSeconds(3));
