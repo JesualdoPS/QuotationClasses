@@ -68,7 +68,6 @@ namespace Calc.BusinessLogic
             MatchCollection matchingParts = Regex.Matches(input, @"(\d+)|(m{1,2})|([+*/-])");
             if (!HasRecognizedAll(input, matchingParts)) throw new FormatException("Invalid symbol");
 
-
             if (matchingParts.Count < 5)
                 throw new ArgumentException("Invalid Expression");
 
@@ -94,10 +93,19 @@ namespace Calc.BusinessLogic
 
         private static bool HasRecognizedAll(string input, MatchCollection matchingParts)
         {
-            var regex = new Regex(string.Join("|", matchingParts.Cast<Match>().Select(m => Regex.Escape(m.Value))));
-            var inputWithoutMatches = regex.Replace(input, "");
-
-            return string.IsNullOrWhiteSpace(inputWithoutMatches);
+            var matchingTexts = matchingParts
+                .Select(x => x.Value)
+                .OrderByDescending(x => x.Length)
+                .ToArray();
+            
+            var inputWihoutMatches = input;
+            foreach (var matchingText in matchingTexts)
+            {
+                inputWihoutMatches = inputWihoutMatches.Replace(matchingText, "");
+            }
+            inputWihoutMatches = inputWihoutMatches.Replace(" ", "");
+            var hasMatchedEverything = string.IsNullOrEmpty(inputWihoutMatches);
+            return hasMatchedEverything;
         }
 
         public async Task<Mass> CalculateWeight(Volume materialVolume, Materials material)

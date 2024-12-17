@@ -25,6 +25,20 @@ namespace TestProject
         }
 
         [TestMethod]
+        public async Task ShouldCalculateWithRepetitiveNumbers()
+        {
+            //Arrange
+            var repository = new RepositoryJson();
+            var calculator = new Calculator(repository);
+
+            //Act
+            var result = await calculator.Calculate("3m*30m");
+
+            //Assert
+            result.Result.Should().Be(Area.FromSquareMeters(90));
+        }
+
+        [TestMethod]
         public async Task ShouldSubtractTwoNumbers()
         {
             //Arrange
