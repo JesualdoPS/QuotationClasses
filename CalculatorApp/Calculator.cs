@@ -16,20 +16,23 @@ namespace CalculatorApp
         {
             _httpClient = new HttpClient();
             _httpClient.Timeout = TimeSpan.FromSeconds(5);
-            _httpClient.BaseAddress = new Uri("https://localhost:7299");
+            _httpClient.BaseAddress = new Uri("https://localhost:5044");
         }
 
         public async Task<MathLog> Calculate(string input)
         {
-            var retryPolicy = Policy.Handle<HttpRequestException>().WaitAndRetryAsync(2, _ => TimeSpan.FromSeconds(2));
+            var retryPolicy = Policy.Handle<HttpRequestException>()
+                .WaitAndRetryAsync(10, _ => TimeSpan.FromSeconds(3));
+
+            var request = new CalculateRequest { Input = input };
+            var json = JsonConvert.SerializeObject(request);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
 
             try
             {
                 return await retryPolicy.ExecuteAsync(async () =>
                 {
-                    var request = new CalculateRequest { Input = input };
-                    var json = JsonConvert.SerializeObject(request);
-                    var content = new StringContent(json, Encoding.UTF8, "application/json");
+                    
 
                     var response = await _httpClient.PostAsync("Calculator/Calculate", content);
                     response.EnsureSuccessStatusCode();
@@ -53,14 +56,14 @@ namespace CalculatorApp
         {
             var retryPolicy = Policy.Handle<HttpRequestException>().WaitAndRetryAsync(2, _ => TimeSpan.FromSeconds(2));
 
+            var request = new NormalRequest { Value1 = v1, Value2 = v2 };
+            var json = JsonConvert.SerializeObject(request);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
             try
             {
                 return await retryPolicy.ExecuteAsync(async () =>
                 {
-                    var request = new NormalRequest { Value1 = v1, Value2 = v2 };
-                    var json = JsonConvert.SerializeObject(request);
-                    var content = new StringContent(json, Encoding.UTF8, "application/json");
-
                     var response = await _httpClient.PostAsync("/Calculator/AddNumbers", content);
                     response.EnsureSuccessStatusCode();
 
@@ -82,14 +85,14 @@ namespace CalculatorApp
         {
             var retryPolicy = Policy.Handle<HttpRequestException>().WaitAndRetryAsync(2, _ => TimeSpan.FromSeconds(2));
 
+            var request = new NormalRequest { Value1 = v1, Value2 = v2 };
+            var json = JsonConvert.SerializeObject(request);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
             try
             {
                 return await retryPolicy.ExecuteAsync(async () =>
                 {
-                    var request = new NormalRequest { Value1 = v1, Value2 = v2 };
-                    var json = JsonConvert.SerializeObject(request);
-                    var content = new StringContent(json, Encoding.UTF8, "application/json");
-
                     var response = await _httpClient.PostAsync("Calculator/SubtractNumbers", content);
                     response.EnsureSuccessStatusCode();
 
@@ -111,14 +114,14 @@ namespace CalculatorApp
         {
             var retryPolicy = Policy.Handle<HttpRequestException>().WaitAndRetryAsync(2, _ => TimeSpan.FromSeconds(2));
 
+            var request = new NormalRequest { Value1 = v1, Value2 = v2 };
+            var json = JsonConvert.SerializeObject(request);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
             try
             {
                 return await retryPolicy.ExecuteAsync(async () =>
                 {
-                    var request = new NormalRequest { Value1 = v1, Value2 = v2 };
-                    var json = JsonConvert.SerializeObject(request);
-                    var content = new StringContent(json, Encoding.UTF8, "application/json");
-
                     var response = await _httpClient.PostAsync("Calculator/MultiplyNumbers", content);
                     response.EnsureSuccessStatusCode();
 
@@ -140,14 +143,14 @@ namespace CalculatorApp
         {
             var retryPolicy = Policy.Handle<HttpRequestException>().WaitAndRetryAsync(2, _ => TimeSpan.FromSeconds(2));
 
+            var request = new NormalRequest { Value1 = v1, Value2 = v2 };
+            var json = JsonConvert.SerializeObject(request);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
             try
             {
                 return await retryPolicy.ExecuteAsync(async () =>
                 {
-                    var request = new NormalRequest { Value1 = v1, Value2 = v2 };
-                    var json = JsonConvert.SerializeObject(request);
-                    var content = new StringContent(json, Encoding.UTF8, "application/json");
-
                     var response = await _httpClient.PostAsync("Calculator/DivideNumbers", content);
                     response.EnsureSuccessStatusCode();
 
@@ -174,19 +177,19 @@ namespace CalculatorApp
         {
             var retryPolicy = Policy.Handle<HttpRequestException>().WaitAndRetryAsync(2, _ => TimeSpan.FromSeconds(2));
 
+            var request = new VolumeRequest()
+            {
+                Length1 = length1.ToSerializable(),
+                Length2 = length2.ToSerializable(),
+                Length3 = lenght3.ToSerializable()
+            };
+            var json = JsonConvert.SerializeObject(request);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
             try
             {
                 return await retryPolicy.ExecuteAsync(async () =>
                 {
-                    var request = new VolumeRequest()
-                    {
-                        Length1 = length1.ToSerializable(),
-                        Length2 = length2.ToSerializable(),
-                        Length3 = lenght3.ToSerializable()
-                    };
-                    var json = JsonConvert.SerializeObject(request);
-                    var content = new StringContent(json, Encoding.UTF8, "application/json");
-
                     var response = await _httpClient.PostAsync("Calculator/MultiplyVolume", content);
                     response.EnsureSuccessStatusCode();
 

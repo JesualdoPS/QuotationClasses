@@ -1,6 +1,7 @@
 using System.Text.RegularExpressions;
 using Azure.Core;
 using Contracts;
+using Microsoft.IdentityModel.Tokens;
 using UnitsNet;
 
 
@@ -159,8 +160,10 @@ namespace CalculatorApp
 
         private void btnBackspace_Click(object sender, EventArgs e)
         {
-            screen.Text = screen.Text.Substring(0, screen.Text.Length - 1);
-            screen.SelectionStart = screen.Text.Length;
+if (screen.Text.Length > 0)             {
+                screen.Text = screen.Text.Substring(0, screen.Text.Length - 1);
+                screen.SelectionStart = screen.Text.Length;
+            }
         }
 
         private void btnClearEverything_Click(object sender, EventArgs e)

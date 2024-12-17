@@ -94,15 +94,10 @@ namespace Calc.BusinessLogic
 
         private static bool HasRecognizedAll(string input, MatchCollection matchingParts)
         {
-            var matchingTexts = matchingParts.Select(x => x.Value).ToArray();
-            var inputWihoutMatches = input;
-            foreach (var matchingText in matchingTexts)
-            {
-                inputWihoutMatches = inputWihoutMatches.Replace(matchingText, "");
-            }
-            inputWihoutMatches = inputWihoutMatches.Replace(" ", "");
-            var hasMatchedEverything = string.IsNullOrEmpty(inputWihoutMatches);
-            return hasMatchedEverything;
+            var regex = new Regex(string.Join("|", matchingParts.Cast<Match>().Select(m => Regex.Escape(m.Value))));
+            var inputWithoutMatches = regex.Replace(input, "");
+
+            return string.IsNullOrWhiteSpace(inputWithoutMatches);
         }
 
         public async Task<Mass> CalculateWeight(Volume materialVolume, Materials material)
