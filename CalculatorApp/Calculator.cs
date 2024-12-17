@@ -3,64 +3,59 @@ using Calc.Persistance;
 using Contracts;
 using Newtonsoft.Json;
 using UnitsNet;
+using Polly;
 
 namespace CalculatorApp
 {
     public class Calculator : ICalculator
     {
         private readonly HttpClient _httpClient;
-
         public List<MathLog> Memory { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public Calculator()
         {
             _httpClient = new HttpClient();
+            _httpClient.Timeout = TimeSpan.FromSeconds(5);
             _httpClient.BaseAddress = new Uri("https://localhost:7299");
         }
 
         public async Task<MathLog> Calculate(string input)
         {
-            int maxTries = 3;
-            int tryNumber = 1;
+            var retryPolicy = Policy.Handle<HttpRequestException>().WaitAndRetryAsync(2, _ => TimeSpan.FromSeconds(2));
 
-            while (tryNumber <= maxTries)
+            try
             {
-                try
+                return await retryPolicy.ExecuteAsync(async () =>
                 {
                     var request = new CalculateRequest { Input = input };
                     var json = JsonConvert.SerializeObject(request);
                     var content = new StringContent(json, Encoding.UTF8, "application/json");
 
                     var response = await _httpClient.PostAsync("Calculator/Calculate", content);
+                    response.EnsureSuccessStatusCode();
 
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var jsonResult = await response.Content.ReadAsStringAsync();
-                        var mathLog = JsonConvert.DeserializeObject<MathLogEntity>(jsonResult);
-                        var result = mathLog.FromEntity();
-                        return result;
-                    }
-                    else
-                    {
-                        throw new Exception($"Calulation error: {response.StatusCode}");
-                    }
-                }
-                catch (HttpRequestException)
-                {
-                    tryNumber++;
-                    await Task.Delay(TimeSpan.FromSeconds(3));
-                }
+                    var jsonResult = await response.Content.ReadAsStringAsync();
+                    var mathLog = JsonConvert.DeserializeObject<MathLogEntity>(jsonResult);
+                    return mathLog.FromEntity();
+                });
             }
-            throw new HttpRequestException("Number of tries was reached");
+            catch (HttpRequestException)
+            {
+                throw new HttpRequestException("Connection failed");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Unexpected error: {ex.Message}");
+            }
         }
 
         public async Task<double> Add(double v1, double v2)
         {
-            int maxTries = 3;
-            int tryNumber = 0;
-            while (tryNumber < maxTries)
+            var retryPolicy = Policy.Handle<HttpRequestException>().WaitAndRetryAsync(2, _ => TimeSpan.FromSeconds(2));
+
+            try
             {
-                try
+                return await retryPolicy.ExecuteAsync(async () =>
                 {
                     var request = new NormalRequest { Value1 = v1, Value2 = v2 };
                     var json = JsonConvert.SerializeObject(request);
@@ -70,26 +65,26 @@ namespace CalculatorApp
                     response.EnsureSuccessStatusCode();
 
                     var responseBody = await response.Content.ReadAsStringAsync();
-                    var result = JsonConvert.DeserializeObject<double>(responseBody);
-
-                    return result;
-                }
-                catch (HttpRequestException ex)
-                {
-                    tryNumber++;
-                    await Task.Delay(TimeSpan.FromSeconds(3));
-                }
+                    return JsonConvert.DeserializeObject<double>(responseBody);
+                });
             }
-            throw new Exception("Number of tries was reached");
+            catch (HttpRequestException)
+            {
+                throw new HttpRequestException("Connection failed");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Unexpected error: {ex.Message}");
+            }
         }
 
         public async Task<double> Subtract(double v1, double v2)
         {
-            int maxTries = 3;
-            int tryNumber = 0;
-            while (tryNumber < maxTries)
+            var retryPolicy = Policy.Handle<HttpRequestException>().WaitAndRetryAsync(2, _ => TimeSpan.FromSeconds(2));
+
+            try
             {
-                try
+                return await retryPolicy.ExecuteAsync(async () =>
                 {
                     var request = new NormalRequest { Value1 = v1, Value2 = v2 };
                     var json = JsonConvert.SerializeObject(request);
@@ -99,26 +94,26 @@ namespace CalculatorApp
                     response.EnsureSuccessStatusCode();
 
                     var responseBody = await response.Content.ReadAsStringAsync();
-                    var result = JsonConvert.DeserializeObject<double>(responseBody);
-
-                    return result;
-                }
-                catch (HttpRequestException ex)
-                {
-                    tryNumber++;
-                    await Task.Delay(TimeSpan.FromSeconds(3));
-                }
+                    return JsonConvert.DeserializeObject<double>(responseBody);
+                });
             }
-            throw new Exception("Number of tries was reached");
+            catch (HttpRequestException)
+            {
+                throw new HttpRequestException("Connection failed");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Unexpected error: {ex.Message}");
+            }
         }
 
         public async Task<double> Multiply(double v1, double v2)
         {
-            int maxTries = 3;
-            int tryNumber = 0;
-            while (tryNumber < maxTries)
+            var retryPolicy = Policy.Handle<HttpRequestException>().WaitAndRetryAsync(2, _ => TimeSpan.FromSeconds(2));
+
+            try
             {
-                try
+                return await retryPolicy.ExecuteAsync(async () =>
                 {
                     var request = new NormalRequest { Value1 = v1, Value2 = v2 };
                     var json = JsonConvert.SerializeObject(request);
@@ -128,26 +123,26 @@ namespace CalculatorApp
                     response.EnsureSuccessStatusCode();
 
                     var responseBody = await response.Content.ReadAsStringAsync();
-                    var result = JsonConvert.DeserializeObject<double>(responseBody);
-
-                    return result;
-                }
-                catch (HttpRequestException ex)
-                {
-                    tryNumber++;
-                    await Task.Delay(TimeSpan.FromSeconds(3));
-                }
+                    return JsonConvert.DeserializeObject<double>(responseBody);
+                });
             }
-            throw new Exception("Number of tries was reached");
+            catch (HttpRequestException)
+            {
+                throw new HttpRequestException("Connection failed");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Unexpected error: {ex.Message}");
+            }
         }
 
         public async Task<double> Divide(double v1, double v2)
         {
-            int maxTries = 3;
-            int tryNumber = 0;
-            while (tryNumber < maxTries)
+            var retryPolicy = Policy.Handle<HttpRequestException>().WaitAndRetryAsync(2, _ => TimeSpan.FromSeconds(2));
+
+            try
             {
-                try
+                return await retryPolicy.ExecuteAsync(async () =>
                 {
                     var request = new NormalRequest { Value1 = v1, Value2 = v2 };
                     var json = JsonConvert.SerializeObject(request);
@@ -157,17 +152,17 @@ namespace CalculatorApp
                     response.EnsureSuccessStatusCode();
 
                     var responseBody = await response.Content.ReadAsStringAsync();
-                    var result = JsonConvert.DeserializeObject<double>(responseBody);
-
-                    return result;
-                }
-                catch (HttpRequestException ex)
-                {
-                    tryNumber++;
-                    await Task.Delay(TimeSpan.FromSeconds(3));
-                }
+                    return JsonConvert.DeserializeObject<double>(responseBody);
+                });
             }
-            throw new Exception("Number of tries was reached");
+            catch (HttpRequestException)
+            {
+                throw new HttpRequestException("Connection failed");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Unexpected error: {ex.Message}");
+            }
         }
 
         public async Task<Mass> CalculateWeight(Volume materialVolume, Materials material)
@@ -177,11 +172,11 @@ namespace CalculatorApp
 
         public async Task<Volume> MultiplyVolume(Length length1, Length length2, Length lenght3)
         {
-            int maxTries = 3;
-            int tryNumber = 0;
-            while (tryNumber < maxTries)
+            var retryPolicy = Policy.Handle<HttpRequestException>().WaitAndRetryAsync(2, _ => TimeSpan.FromSeconds(2));
+
+            try
             {
-                try
+                return await retryPolicy.ExecuteAsync(async () =>
                 {
                     var request = new VolumeRequest()
                     {
@@ -189,7 +184,6 @@ namespace CalculatorApp
                         Length2 = length2.ToSerializable(),
                         Length3 = lenght3.ToSerializable()
                     };
-
                     var json = JsonConvert.SerializeObject(request);
                     var content = new StringContent(json, Encoding.UTF8, "application/json");
 
@@ -198,17 +192,17 @@ namespace CalculatorApp
 
                     var responseBody = await response.Content.ReadAsStringAsync();
                     var unitsValue = JsonConvert.DeserializeObject<SerializableUnitsValue>(responseBody);
-                    var result = (Volume)unitsValue.ToIQuantity();
-
-                    return result;
-                }
-                catch (HttpRequestException ex)
-                {
-                    tryNumber++;
-                    await Task.Delay(TimeSpan.FromSeconds(3));
-                }
+                    return (Volume)unitsValue.ToIQuantity();
+                });
             }
-            throw new Exception("Number of tries was reached");
+            catch (HttpRequestException)
+            {
+                throw new HttpRequestException("Connection failed");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Unexpected error: {ex.Message}");
+            }
         }
     }
 }
