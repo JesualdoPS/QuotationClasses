@@ -17,12 +17,28 @@ namespace Calc.Persistance
 
         public static MathLogEntity ToEntity(this MathLog mathLog)
         {
-            var entity = new MathLogEntity
+            var entity = new MathLogEntity { Math = mathLog.Math };
+
+            if (mathLog.IQuantityResult is Length length)
             {
-                Math = mathLog.Math,
-                ResultValue = (double)mathLog.Result.Value,
-                ResultUnit = mathLog.Result.Unit.ToString()
-            };
+                entity.ResultValue = (double)length.Value;
+                entity.ResultUnit = length.Unit.ToString();
+            }
+            else if (mathLog.IQuantityResult is Area area)
+            {
+                entity.ResultValue = (double)area.Value;
+                entity.ResultUnit = area.Unit.ToString();
+            }
+            else if (mathLog.ResultDouble is double doubleValue)
+            {
+                entity.ResultValue = doubleValue;
+                entity.ResultUnit = null;
+            }
+            else
+            {
+                throw new NotSupportedException("Unsupported result.");
+            }
+
             return entity;
         }
 
@@ -30,13 +46,20 @@ namespace Calc.Persistance
         {
             double value = entity.ResultValue;
             string unit = entity.ResultUnit;
+            var mathLog = new MathLog();
 
-            var quantity = ToIQuantity(value, unit);
-            var mathLog = new MathLog()
+            if (unit != null)
             {
-                Math = entity.Math,
-                Result = quantity
-            };
+                var quantity = ToIQuantity(value, unit);
+                mathLog.Math = entity.Math;
+                mathLog.IQuantityResult = quantity;
+
+            }
+            else
+            {
+                mathLog.Math = entity.Math;
+                mathLog.ResultDouble = entity.ResultValue;
+            }
 
             return mathLog;
         }

@@ -4,6 +4,6 @@
     {
         public string Math { get; set; }
         public double ResultValue { get; set; }
-        public string ResultUnit { get; set; }
+        public string? ResultUnit { get; set; }
     }
 }

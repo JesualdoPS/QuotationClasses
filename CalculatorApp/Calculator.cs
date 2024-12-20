@@ -31,9 +31,7 @@ namespace CalculatorApp
             try
             {
                 return await retryPolicy.ExecuteAsync(async () =>
-                {
-                    
-
+                {  
                     var response = await _httpClient.PostAsync("Calculator/Calculate", content);
                     response.EnsureSuccessStatusCode();
 

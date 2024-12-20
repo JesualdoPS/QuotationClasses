@@ -17,7 +17,7 @@ namespace Calc.Persistance
 
         public void SaveMemory(string filePath)
         {
-            if (Memory.Any(m => m.Result == null))
+            if (Memory.Any(m => m.IQuantityResult == null))
             {
                 throw new XmlException("Result cannot be null");
             }

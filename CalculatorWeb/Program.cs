@@ -9,7 +9,7 @@ builder.WebHost.UseUrls("http://localhost:7299", "https://localhost:5044");
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddSingleton<ICalculator, Calculator>();
-builder.Services.AddTransient<IRepository, RepositorySQL>();
+builder.Services.AddTransient<IRepository, RepositoryJson>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 //object value = builder.Services.AddSwaggerGen();

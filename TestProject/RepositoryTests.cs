@@ -13,22 +13,20 @@ namespace TestProject
         [TestMethod]
         public void ShouldSerializeMathLogToJson()
         {
-            // Arrange
-            
+            // Arrange            
             var mathLogs = new List<MathLog>
             {
-                new MathLog { Math = "15 m + 5 m", Result = Length.FromMeters(20) },
-                new MathLog { Math = "10 m * 2 m", Result = Area.FromSquareMeters(20) },
-                new MathLog { Math = "5 mm - 3 mm", Result = Length.FromMillimeters(2) },
-                new MathLog { Math = "3 mm * 3 mm", Result = Area.FromSquareMillimeters(9) }
+                new MathLog { Math = "15 m + 5 m", IQuantityResult = Length.FromMeters(20) },
+                new MathLog { Math = "10 m * 2 m", IQuantityResult = Area.FromSquareMeters(20) },
+                new MathLog { Math = "5 mm - 3 mm", IQuantityResult = Length.FromMillimeters(2) },
+                new MathLog { Math = "3 mm * 3 mm", IQuantityResult = Area.FromSquareMillimeters(9) }
             };
+
             var repository = new RepositoryJson(mathLogs);
             var filePath = @"D:\Material de aula\Aula de Programação\curso_C#\Aulas\QuotationFactory\Storage\Calculator.json";
 
             // Act
             repository.SaveMemory(filePath);
-            var indented = new JsonSerializerOptions();
-            indented.WriteIndented = true;
             var loadedRepository = new RepositoryJson();
             loadedRepository.LoadMemory(filePath);
 
@@ -37,8 +35,58 @@ namespace TestProject
             for (int i = 0; i < mathLogs.Count; i++)
             {
                 loadedRepository.Memory[i].Math.Should().Be(mathLogs[i].Math);
-                loadedRepository.Memory[i].Result.ToString().Should().Be(mathLogs[i].Result.ToString());
+                loadedRepository.Memory[i].IQuantityResult.ToString().Should().Be(mathLogs[i].IQuantityResult.ToString());
             }
+        }
+
+        [TestMethod]
+        public void ShouldSaveDivisionToJson()
+        {
+            //Arrange
+            var mathLogs = new List<MathLog>
+            {
+                new MathLog { Math = "15m/5m", ResultDouble = 3},
+                new MathLog { Math = "20m/4m", ResultDouble = 5}
+            };
+            var repository = new RepositoryJson(mathLogs);
+            var filePath = @"D:\Material de aula\Aula de Programação\curso_C#\Aulas\QuotationFactory\Storage\Calculator.json";
+
+            //Act
+            repository.SaveMemory(filePath);
+            var loadedRepository = new RepositoryJson();
+            loadedRepository.LoadMemory(filePath);
+
+            //Assert
+            repository.Memory.Count.Should().Be(2);
+            loadedRepository.Memory[0].Math.Should().Be("15m/5m");
+            loadedRepository.Memory[1].Math.Should().Be("20m/4m");
+            loadedRepository.Memory[0].ResultDouble.Should().Be(3);
+            loadedRepository.Memory[1].ResultDouble.Should().Be(5);
+        }
+
+        [TestMethod]
+        public void ShouldSaveDivisionAndMultiplication()
+        {
+            //Arrange
+            var mathLogs = new List<MathLog>
+            {
+                new MathLog { Math = "15m/5m", ResultDouble = 3},
+                new MathLog { Math = "20m*5m", IQuantityResult = Area.FromSquareMeters(100)}
+            };
+            var repository = new RepositoryJson(mathLogs);
+            var filePath = @"D:\Material de aula\Aula de Programação\curso_C#\Aulas\QuotationFactory\Storage\Calculator.json";
+
+            //    //Act
+            repository.SaveMemory(filePath);
+            var loadedRepository = new RepositoryJson();
+            loadedRepository.LoadMemory(filePath);
+
+            //Assert
+            loadedRepository.Memory.Count.Should().Be(2);
+            loadedRepository.Memory[0].Math.Should().Be("15m/5m");
+            loadedRepository.Memory[1].Math.Should().Be("20m*5m");
+            loadedRepository.Memory[0].ResultDouble.Should().Be(3);
+            loadedRepository.Memory[1].IQuantityResult.Should().Be(Area.FromSquareMeters(100));
         }
 
         [TestMethod]
@@ -48,10 +96,10 @@ namespace TestProject
             var repository = new RepositorySQL();
             var mathLogs = new List<MathLog>
             {
-                new MathLog { Math = "15 m + 5 m", Result = Length.FromMeters(20) },
-                new MathLog { Math = "10 m * 2 m", Result = Area.FromSquareMeters(20) },
-                new MathLog { Math = "5 mm - 3 mm", Result = Length.FromMillimeters(2) },
-                new MathLog { Math = "3 mm * 3 mm", Result = Area.FromSquareMillimeters(9) }
+                new MathLog { Math = "15 m + 5 m", IQuantityResult = Length.FromMeters(20) },
+                new MathLog { Math = "10 m * 2 m", IQuantityResult = Area.FromSquareMeters(20) },
+                new MathLog { Math = "5 mm - 3 mm", IQuantityResult = Length.FromMillimeters(2) },
+                new MathLog { Math = "3 mm * 3 mm", IQuantityResult = Area.FromSquareMillimeters(9) }
             };
             repository.Memory = mathLogs;
             var filePath = "";
@@ -66,7 +114,7 @@ namespace TestProject
             for (int i = 0; i < mathLogs.Count; i++)
             {
                 loadedRepository.Memory[i].Math.Should().Be(mathLogs[i].Math);
-                loadedRepository.Memory[i].Result.ToString().Should().Be(mathLogs[i].Result.ToString());
+                loadedRepository.Memory[i].IQuantityResult.ToString().Should().Be(mathLogs[i].IQuantityResult.ToString());
             }
         }
 
@@ -90,7 +138,7 @@ namespace TestProject
             // Arrange
             var mathLogs = new List<MathLog>
             {
-                new MathLog { Math = "15 x + 5 x", Result = null }
+                new MathLog { Math = "15 x + 5 x", IQuantityResult = null }
             };
             var repository = new RepositoryJson(mathLogs);
             var filePath = @"D:\Material de aula\Aula de Programação\curso_C#\Aulas\QuotationFactory\Storage\Calculator.json";
@@ -122,10 +170,10 @@ namespace TestProject
             // Arrange
             var mathLogs = new List<MathLog>
             {
-                new MathLog { Math = "15 m + 5 m", Result = Length.FromMeters(20)},
-                new MathLog { Math = "10 m * 2 m", Result = Area.FromSquareMeters(20)},
-                new MathLog { Math = "5 mm - 3 mm", Result = Length.FromMillimeters(2)},
-                new MathLog { Math = "3 mm * 3 mm", Result = Area.FromSquareMillimeters(9)}
+                new MathLog { Math = "15 m + 5 m", IQuantityResult = Length.FromMeters(20)},
+                new MathLog { Math = "10 m * 2 m", IQuantityResult = Area.FromSquareMeters(20)},
+                new MathLog { Math = "5 mm - 3 mm", IQuantityResult = Length.FromMillimeters(2)},
+                new MathLog { Math = "3 mm * 3 mm", IQuantityResult = Area.FromSquareMillimeters(9)}
             };
             var repository = new RepositoryXml(mathLogs);
             var filePath = @"D:\Material de aula\Aula de Programação\curso_C#\Aulas\QuotationFactory\Storage\Calculator.xml";
@@ -146,8 +194,8 @@ namespace TestProject
 
             var mathLogs = new List<MathLog>
             {
-                new MathLog { Math = "15 m + 5 m", Result = Length.FromMeters(20)},
-                new MathLog { Math = "10 m * 2 m", Result = null},
+                new MathLog { Math = "15 m + 5 m", IQuantityResult = Length.FromMeters(20)},
+                new MathLog { Math = "10 m * 2 m", IQuantityResult = null},
             };
             var filePath = @"D:\Material de aula\Aula de Programação\curso_C#\Aulas\QuotationFactory\Storage\Calculator.xml";
             var repository = new RepositoryXml(mathLogs);

@@ -114,7 +114,10 @@ namespace CalculatorApp
                 if (Regex.Matches(screen.Text, "m|mm").Count == 2)
                 {
                     var mathLog = await _calculator.Calculate(screen.Text);
-                    screen.Text = mathLog.Result.ToString();
+                    
+                    screen.Text = (mathLog.ResultDouble == null)
+                        ? mathLog.IQuantityResult.ToString()
+                        : mathLog.ResultDouble.ToString();
                 }
                 else if (Regex.Matches(screen.Text, "m|mm").Count > 2)
                 {
