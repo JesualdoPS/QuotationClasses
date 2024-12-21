@@ -26,7 +26,8 @@ namespace Calc.Persistance
                     var command = new SqlCommand("INSERT INTO MathLogEntities (Math, ResultValue, ResultUnit) VALUES (@Math, @ResultValue, @ResultUnit)", connection);
                     command.Parameters.AddWithValue("@Math", entity.Math);
                     command.Parameters.AddWithValue("@ResultValue", entity.ResultValue);
-                    command.Parameters.AddWithValue("@ResultUnit", entity.ResultUnit);
+                    command.Parameters.AddWithValue
+                        ("@ResultUnit", entity.ResultUnit != null ? entity.ResultUnit : DBNull.Value);
 
                     command.ExecuteNonQuery();
                 }
@@ -50,7 +51,7 @@ namespace Calc.Persistance
                     {
                         Math = reader["Math"].ToString(),
                         ResultValue = (double)reader["ResultValue"],
-                        ResultUnit = reader["ResultUnit"].ToString()
+                        ResultUnit = reader["ResultUnit"].ToString() == "" ? null : reader["ResultUnit"].ToString()
                     });
                 }
             }

@@ -119,6 +119,32 @@ namespace TestProject
         }
 
         [TestMethod]
+        public void ShouldSerializeMathLogWithDivisionToSQL()
+        {
+            // Arrange
+            var repository = new RepositorySQL();
+            var mathLogs = new List<MathLog>
+            {
+                new MathLog { Math = "15m/5m", ResultDouble = 3},
+                new MathLog { Math = "20m*5m", IQuantityResult = Area.FromSquareMeters(100)}
+            };
+            repository.Memory = mathLogs;
+            var filePath = "";
+
+            // Act
+            repository.SaveMemory(filePath);
+            var loadedRepository = new RepositorySQL();
+            loadedRepository.LoadMemory(filePath);
+
+            // Assert
+            loadedRepository.Memory.Count.Should().Be(2);
+            loadedRepository.Memory[0].Math.Should().Be("15m/5m");
+            loadedRepository.Memory[1].Math.Should().Be("20m*5m");
+            loadedRepository.Memory[0].ResultDouble.Should().Be(3);
+            loadedRepository.Memory[1].IQuantityResult.Should().Be(Area.FromSquareMeters(100));
+        }
+
+        [TestMethod]
         public void ShouldThrowFileNotFoundException()
         {
             // Arrange
