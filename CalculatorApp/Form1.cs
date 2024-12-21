@@ -1,23 +1,18 @@
 using System.Text.RegularExpressions;
-using Azure.Core;
 using Contracts;
-using Microsoft.IdentityModel.Tokens;
 using UnitsNet;
-using Calc.Persistance;
 
 
 namespace CalculatorApp
 {
     public partial class CalculatorApp : Form
     {
-        private readonly HttpClient _httpClient;
         private readonly ICalculator _calculator;
 
         public CalculatorApp()
         {
             InitializeComponent();
-            _httpClient = new HttpClient();
-            _calculator = new Calculator(_httpClient);
+            _calculator = new Calculator();
         }
 
         private void screen_TextChanged(object sender, EventArgs e) { }
@@ -117,7 +112,7 @@ namespace CalculatorApp
                 if (Regex.Matches(screen.Text, "m|mm").Count == 2)
                 {
                     var mathLog = await _calculator.Calculate(screen.Text);
-                    
+
                     screen.Text = (mathLog.ResultDouble == null)
                         ? mathLog.IQuantityResult.ToString()
                         : mathLog.ResultDouble.ToString();
@@ -141,7 +136,6 @@ namespace CalculatorApp
                     var result = await _calculator.MultiplyVolume(length1, length2, length3);
                     screen.Text = result.ToString();
                 }
-
                 else
                 {
                     throw new FormatException("Invalid Expression");
@@ -166,7 +160,8 @@ namespace CalculatorApp
 
         private void btnBackspace_Click(object sender, EventArgs e)
         {
-if (screen.Text.Length > 0)             {
+            if (screen.Text.Length > 0)
+            {
                 screen.Text = screen.Text.Substring(0, screen.Text.Length - 1);
                 screen.SelectionStart = screen.Text.Length;
             }
