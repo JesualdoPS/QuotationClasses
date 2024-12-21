@@ -13,15 +13,28 @@ namespace TestProject
         public async Task ShouldAddTwoNumbers()
         {
             //Arrange
+            var repository = new RepositoryXml();
+            var calculator = new Calculator(repository);
+
+            //Act
+            double result = await calculator.Add(1, 1);
+
+            //Assert
+            result.Should().Be(2);
+        }
+
+        [TestMethod]
+        public async Task ShouldCalculateWithRepetitiveNumbers()
+        {
+            //Arrange
             var repository = new RepositoryJson();
             var calculator = new Calculator(repository);
 
             //Act
-            var result = await calculator.Add(1, 1);
-
+            var result = await calculator.Calculate("3m*30m");
 
             //Assert
-            result.Should().Be(2);
+            result.IQuantityResult.Should().Be(Area.FromSquareMeters(90));
         }
 
         [TestMethod]
@@ -64,7 +77,6 @@ namespace TestProject
             //Act
             var result = await calculator.Divide(10, 2);
 
-
             //Assert
             result.Should().Be(5);
         }
@@ -80,7 +92,21 @@ namespace TestProject
             var result = await calculator.Calculate("12 m + 2 m");
 
             //Assert
-            result.Result.Should().Be(Length.FromMeters(14));
+            result.IQuantityResult.Should().Be(Length.FromMeters(14));
+        }
+
+        [TestMethod]
+        public async Task ShouldDivideAStringWithALengthBasedUnitOfMeasure()
+        {
+            //Arrange
+            var repository = new RepositoryJson();
+            var calculator = new Calculator(repository);
+
+            //Act
+            var result = await calculator.Calculate("12m/2m");
+
+            //Assert
+            result.ResultDouble.Should().Be(6);
         }
 
         [TestMethod]
@@ -94,7 +120,7 @@ namespace TestProject
             var result = await calculator.Calculate("12 m - 2 m");
 
             //Assert
-            result.Result.Should().Be(Length.FromMeters(10));
+            result.IQuantityResult.Should().Be(Length.FromMeters(10));
         }
 
         [TestMethod]
@@ -108,7 +134,7 @@ namespace TestProject
             var result = await calculator.Calculate("12 m * 2 m");
 
             //Assert
-            result.Result.Should().Be(Area.FromSquareMeters(24));
+            result.IQuantityResult.Should().Be(Area.FromSquareMeters(24));
         }
 
         [TestMethod]
@@ -122,7 +148,7 @@ namespace TestProject
             var result = await calculator.Calculate("12 mm + 2 mm");
 
             //Assert
-            result.Result.Should().Be(Length.FromMillimeters(14));
+            result.IQuantityResult.Should().Be(Length.FromMillimeters(14));
         }
 
         [TestMethod]
@@ -136,7 +162,7 @@ namespace TestProject
             var result = await calculator.Calculate("12 mm - 2 mm");
 
             //Assert
-            result.Result.Should().Be(Length.FromMillimeters(10));
+            result.IQuantityResult.Should().Be(Length.FromMillimeters(10));
         }
 
         [TestMethod]
@@ -150,7 +176,7 @@ namespace TestProject
             var result = await calculator.Calculate("12 mm * 2 mm");
 
             //Assert
-            ((Area)result.Result).SquareMillimeters.Should().Be(24);
+            ((Area)result.IQuantityResult).SquareMillimeters.Should().Be(24);
         }
 
         [TestMethod]
@@ -222,7 +248,7 @@ namespace TestProject
             var result = await calculator.Calculate("12m+2m");
 
             //Assert
-            result.Result.Should().Be(Length.FromMeters(14));
+            result.IQuantityResult.Should().Be(Length.FromMeters(14));
         }
         
         [TestMethod]
@@ -351,7 +377,7 @@ namespace TestProject
 
             //Assert
             result.Math.Should().Be("35 mm - 20 mm");
-            result.Result.Should().Be(Length.FromMillimeters(15));
+            result.IQuantityResult.Should().Be(Length.FromMillimeters(15));
         }
 
         [TestMethod]
@@ -371,7 +397,7 @@ namespace TestProject
 
             //Assert
             result.Math.Should().Be("35 mm - 20 mm");
-            result.Result.Should().Be(Length.FromMillimeters(15));
+            result.IQuantityResult.Should().Be(Length.FromMillimeters(15));
         }
 
         [TestMethod]
@@ -388,7 +414,7 @@ namespace TestProject
 
             //Assert
             result.Math.Should().Be("35 mm - 20 mm");
-            result.Result.Should().Be(Length.FromMillimeters(15));
+            result.IQuantityResult.Should().Be(Length.FromMillimeters(15));
         }
 
         [TestMethod]
@@ -404,7 +430,7 @@ namespace TestProject
 
             //Assert
             result.Math.Should().Be("35 mm - 20 mm");
-            result.Result.Should().Be(Length.FromMillimeters(15));
+            result.IQuantityResult.Should().Be(Length.FromMillimeters(15));
         }
 
         [TestMethod]
@@ -421,9 +447,9 @@ namespace TestProject
             var result3 = await calculator.Calculate("15 m * 5 mm");
 
             //Assert
-            result1.Result.Should().Be(Length.FromMeters(15.005));
-            result2.Result.Should().Be(Length.FromMeters(14.995));
-            result3.Result.Should().Be(Area.FromSquareMeters(0.075));
+            result1.IQuantityResult.Should().Be(Length.FromMeters(15.005));
+            result2.IQuantityResult.Should().Be(Length.FromMeters(14.995));
+            result3.IQuantityResult.Should().Be(Area.FromSquareMeters(0.075));
         }
     }
 }

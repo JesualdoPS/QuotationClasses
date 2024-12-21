@@ -1,6 +1,9 @@
-﻿using System.Xml;
+﻿using System.Collections.Generic;
+using System.Text.Json;
+using System.Xml;
 using System.Xml.Serialization;
 using Contracts;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Calc.Persistance
 {
@@ -16,7 +19,7 @@ namespace Calc.Persistance
 
         public void SaveMemory(string filePath)
         {
-            if (Memory.Any(m => m.Result == null))
+            if (Memory.Any(m => m.IQuantityResult == null && m.ResultDouble == null))
             {
                 throw new XmlException("Result cannot be null");
             }
@@ -43,7 +46,13 @@ namespace Calc.Persistance
             var xmlDeserializer = new XmlSerializer(typeof(List<MathLogEntity>));
             using (var reader = new StreamReader(filePath))
             {
-                var entities = (List<MathLogEntity>)xmlDeserializer.Deserialize(reader);
+                var deserializedEntities = (List<MathLogEntity>)xmlDeserializer.Deserialize(reader);
+                List<MathLog> deserializedMemory = deserializedEntities
+                    .Select(entity => entity.FromEntity()).ToList();
+
+                Memory.Clear();
+                Memory.AddRange(deserializedMemory);
+                MemoryPosition = 0;
             }
         }
     }

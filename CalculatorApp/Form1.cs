@@ -1,6 +1,7 @@
 using System.Text.RegularExpressions;
 using Azure.Core;
 using Contracts;
+using Microsoft.IdentityModel.Tokens;
 using UnitsNet;
 using Calc.Persistance;
 
@@ -116,7 +117,10 @@ namespace CalculatorApp
                 if (Regex.Matches(screen.Text, "m|mm").Count == 2)
                 {
                     var mathLog = await _calculator.Calculate(screen.Text);
-                    screen.Text = mathLog.Result.ToString();
+                    
+                    screen.Text = (mathLog.ResultDouble == null)
+                        ? mathLog.IQuantityResult.ToString()
+                        : mathLog.ResultDouble.ToString();
                 }
                 else if (Regex.Matches(screen.Text, "m|mm").Count > 2)
                 {
@@ -162,8 +166,10 @@ namespace CalculatorApp
 
         private void btnBackspace_Click(object sender, EventArgs e)
         {
-            screen.Text = screen.Text.Substring(0, screen.Text.Length - 1);
-            screen.SelectionStart = screen.Text.Length;
+if (screen.Text.Length > 0)             {
+                screen.Text = screen.Text.Substring(0, screen.Text.Length - 1);
+                screen.SelectionStart = screen.Text.Length;
+            }
         }
 
         private void btnClearEverything_Click(object sender, EventArgs e)

@@ -54,7 +54,7 @@ namespace Calc.BusinessLogic
                     break;
 
                 default:
-                    var mathLog = EvaluateAndCalculate(input);                    
+                    var mathLog = EvaluateAndCalculate(input);
                     _repository.Memory.Add(mathLog);
                     Memory.Add(mathLog);
                     _repository.MemoryPosition = _repository.Memory.IndexOf(mathLog);
@@ -68,7 +68,6 @@ namespace Calc.BusinessLogic
             MatchCollection matchingParts = Regex.Matches(input, @"(\d+)|(m{1,2})|([+*/-])");
             if (!HasRecognizedAll(input, matchingParts)) throw new FormatException("Invalid symbol");
 
-
             if (matchingParts.Count < 5)
                 throw new ArgumentException("Invalid Expression");
 
@@ -81,20 +80,32 @@ namespace Calc.BusinessLogic
                 : Length.FromMillimeters(Convert.ToDouble(matchingParts[3].Value));
 
             var operatorSymbol = matchingParts[2].Value;
-
-            IQuantity result = operatorSymbol switch
+            var mathLog = new MathLog();
+            mathLog.Math = input;
+            
+            if (operatorSymbol == "/")
             {
-                "+" => value1 + value2,
-                "-" => value1 - value2,
-                "*" => value1 * value2,
-            };
-            var mathLog = new MathLog { Math = input, Result = result };
+                mathLog.ResultDouble = double.Parse(matchingParts[0].Value) / double.Parse(matchingParts[3].Value);
+            }
+            else
+            {
+                mathLog.IQuantityResult = operatorSymbol switch
+                {
+                    "+" => value1 + value2,
+                    "-" => value1 - value2,
+                    "*" => value1 * value2,
+                };
+            }
             return mathLog;
         }
 
         private static bool HasRecognizedAll(string input, MatchCollection matchingParts)
         {
-            var matchingTexts = matchingParts.Select(x => x.Value).ToArray();
+            var matchingTexts = matchingParts
+                .Select(x => x.Value)
+                .OrderByDescending(x => x.Length)
+                .ToArray();
+
             var inputWihoutMatches = input;
             foreach (var matchingText in matchingTexts)
             {
