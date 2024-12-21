@@ -33,18 +33,8 @@ namespace Calc.Persistance
             }
 
             var json = File.ReadAllText(filePath);
-            List<MathLog> deserializedMemory = new List<MathLog>();
-
-            if (json.Contains("ResultUnit"))
-            {
-                deserializedMemory = JsonSerializer.Deserialize<List<MathLogEntity>>(json)
-                    .Select(entity => entity.FromEntity()).ToList();
-            }
-            else
-            {
-                deserializedMemory = JsonSerializer.Deserialize<List<MathLog>>(json);
-
-            }
+            List<MathLog> deserializedMemory = JsonSerializer.Deserialize<List<MathLogEntity>>(json)
+                .Select(entity => entity.FromEntity()).ToList();
 
             Memory.Clear();
             Memory.AddRange(deserializedMemory);

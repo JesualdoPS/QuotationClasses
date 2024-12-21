@@ -155,7 +155,7 @@ namespace CalculatorApp
                     "+" => await _calculator.Add(value1, value2),
                     "-" => await _calculator.Subtract(value1, value2),
                     "*" => await _calculator.Multiply(value1, value2),
-                    "/" => await _calculator.Add(value1, value2)
+                    "/" => await _calculator.Divide(value1, value2)
                 };
                 screen.Text = result.ToString();
             }

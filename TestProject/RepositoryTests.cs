@@ -184,7 +184,32 @@ namespace TestProject
             loadedRepository.LoadMemory(filePath);
 
             // Assert
-            repository.Memory.Count.Should().Be(mathLogs.Count);
+            loadedRepository.Memory.Count.Should().Be(4);
+        }
+
+        [TestMethod]
+        public void ShouldSaveDivisionAndMultiplicationToXML()
+        {
+            //Arrange
+            var mathLogs = new List<MathLog>
+            {
+                new MathLog { Math = "15m/5m", ResultDouble = 3},
+                new MathLog { Math = "20m*5m", IQuantityResult = Area.FromSquareMeters(100)}
+            };
+            var repository = new RepositoryXml(mathLogs);
+            var filePath = @"D:\Material de aula\Aula de Programação\curso_C#\Aulas\QuotationFactory\Storage\Calculator.xml";
+
+            //Act
+            repository.SaveMemory(filePath);
+            var loadedRepository = new RepositoryXml();
+            loadedRepository.LoadMemory(filePath);
+
+            //Assert
+            loadedRepository.Memory.Count.Should().Be(2);
+            loadedRepository.Memory[0].Math.Should().Be("15m/5m");
+            loadedRepository.Memory[1].Math.Should().Be("20m*5m");
+            loadedRepository.Memory[0].ResultDouble.Should().Be(3);
+            loadedRepository.Memory[1].IQuantityResult.Should().Be(Area.FromSquareMeters(100));
         }
 
         [TestMethod]
@@ -194,8 +219,7 @@ namespace TestProject
 
             var mathLogs = new List<MathLog>
             {
-                new MathLog { Math = "15 m + 5 m", IQuantityResult = Length.FromMeters(20)},
-                new MathLog { Math = "10 m * 2 m", IQuantityResult = null},
+                new MathLog { Math = "10 m * 2 m", IQuantityResult = null, ResultDouble = null},
             };
             var filePath = @"D:\Material de aula\Aula de Programação\curso_C#\Aulas\QuotationFactory\Storage\Calculator.xml";
             var repository = new RepositoryXml(mathLogs);
