@@ -5,7 +5,18 @@ using NSwag;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.WebHost.UseUrls("http://localhost:7299", "https://localhost:5044");
+builder.WebHost.UseUrls("http://localhost:7299", "https://localhost:5044")
+    .ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(7299, listenOptions =>
+    {
+        listenOptions.UseHttps();
+    });
+    options.ListenAnyIP(5044, listenOptions =>
+    {
+        listenOptions.UseHttps();
+    });
+});
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
