@@ -60,14 +60,6 @@ namespace CalculatorWeb.Controllers
             var value3 = (Length)request.Length3.ToIQuantity();
             var result = await _calculator.MultiplyVolume(value1, value2, value3);
             return result.ToSerializable();
-        }
-
-        //[HttpPost("Next")]
-        //public async Task<MathLogEntity> Next(CalculateRequest request)
-        //{
-        //    var mathLog = await _calculator.Calculate("next");
-        //    var mathLogEntity = mathLog.ToEntity();
-        //    return mathLogEntity;
-        //}        
+        }     
     }
 }
