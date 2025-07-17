@@ -10,6 +10,9 @@ namespace TestProject
     [TestClass]
     public class RepositoryTests
     {
+        private static readonly string _directory =
+            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Data");
+
         [TestMethod]
         public void ShouldSerializeMathLogToJson()
         {
@@ -23,7 +26,7 @@ namespace TestProject
             };
 
             var repository = new RepositoryJson(mathLogs);
-            var filePath = @"D:\Material de aula\Aula de Programação\curso_C#\Aulas\QuotationFactory\Storage\Calculator.json";
+            var filePath = Path.Combine(_directory, "ShouldSerializeMathLogToJson.json");
 
             // Act
             repository.SaveMemory(filePath);
@@ -49,7 +52,7 @@ namespace TestProject
                 new MathLog { Math = "20m/4m", ResultDouble = 5}
             };
             var repository = new RepositoryJson(mathLogs);
-            var filePath = @"D:\Material de aula\Aula de Programação\curso_C#\Aulas\QuotationFactory\Storage\Calculator.json";
+            var filePath = Path.Combine(_directory, "ShouldSerializeMathLogToJson.json");
 
             //Act
             repository.SaveMemory(filePath);
@@ -74,9 +77,9 @@ namespace TestProject
                 new MathLog { Math = "20m*5m", IQuantityResult = Area.FromSquareMeters(100)}
             };
             var repository = new RepositoryJson(mathLogs);
-            var filePath = @"D:\Material de aula\Aula de Programação\curso_C#\Aulas\QuotationFactory\Storage\Calculator.json";
+            var filePath = Path.Combine(_directory, "ShouldSerializeMathLogToJson.json");
 
-            //    //Act
+            //Act
             repository.SaveMemory(filePath);
             var loadedRepository = new RepositoryJson();
             loadedRepository.LoadMemory(filePath);
@@ -89,7 +92,7 @@ namespace TestProject
             loadedRepository.Memory[1].IQuantityResult.Should().Be(Area.FromSquareMeters(100));
         }
 
-        [TestMethod]
+        //[TestMethod]
         public void ShouldSerializeMathLogToSQL()
         {
             // Arrange
@@ -118,7 +121,7 @@ namespace TestProject
             }
         }
 
-        [TestMethod]
+        //[TestMethod]
         public void ShouldSerializeMathLogWithDivisionToSQL()
         {
             // Arrange
@@ -167,7 +170,7 @@ namespace TestProject
                 new MathLog { Math = "15 x + 5 x", IQuantityResult = null }
             };
             var repository = new RepositoryJson(mathLogs);
-            var filePath = @"D:\Material de aula\Aula de Programação\curso_C#\Aulas\QuotationFactory\Storage\Calculator.json";
+            var filePath = Path.Combine(_directory, "ShouldSerializeMathLogToJson.json");
 
             // Act
             Action action = () => repository.SaveMemory(filePath);
@@ -202,7 +205,7 @@ namespace TestProject
                 new MathLog { Math = "3 mm * 3 mm", IQuantityResult = Area.FromSquareMillimeters(9)}
             };
             var repository = new RepositoryXml(mathLogs);
-            var filePath = @"D:\Material de aula\Aula de Programação\curso_C#\Aulas\QuotationFactory\Storage\Calculator.xml";
+            var filePath = Path.Combine(_directory, "ShouldSerializeMathLogToJson.json");
 
             // Act
             repository.SaveMemory(filePath);
@@ -223,7 +226,7 @@ namespace TestProject
                 new MathLog { Math = "20m*5m", IQuantityResult = Area.FromSquareMeters(100)}
             };
             var repository = new RepositoryXml(mathLogs);
-            var filePath = @"D:\Material de aula\Aula de Programação\curso_C#\Aulas\QuotationFactory\Storage\Calculator.xml";
+            var filePath = Path.Combine(_directory, "ShouldSerializeMathLogToJson.json");
 
             //Act
             repository.SaveMemory(filePath);

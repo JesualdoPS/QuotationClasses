@@ -15,6 +15,13 @@ namespace Calc.Persistance
 
         public void SaveMemory(string filePath)
         {
+            var directory = Path.GetDirectoryName(filePath);
+
+            if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+
             if (Memory.Any(m => m.IQuantityResult == null && m.ResultDouble == null))
             {
                 throw new JsonException("Result cannot be null");
